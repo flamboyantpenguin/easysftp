@@ -1,22 +1,25 @@
 import sys
-from os import system
-#from tkinter import messagebox
-from threading import Thread
+import pysftp
 
+#sftp = ''
 
-def connect(host, key):
-    system('sftp {}'.format(host))
-    system('clear')
-    #system('{} &>/dev/null'.format(key))
-
+def connect(host, user, key, path):
+    global sftp
+    sftp = pysftp.Connection(host, username=user, password=key)
+    print('Connection Established Successfully')
+    sftp.chdir(path)
 
 print('easyftp 0.9 Pre-Alpha')
 print('A easy to use program for downloading files from a remote system via sftp')
 
 host = input('Enter hostname: ')
-if '@' not in host:
-    user = input('Enter username: ')
-    host = user+'@'+host
+user = input('Enter username: ')
 key = input('Enter password: ')
-c = Thread(target=connect, args=(host,key))
-c.start()
+path = input('Enter remote path: ')
+
+connect(host, user, key, path)
+
+while 1:
+    ldir = sftp.listdir()
+    for i in ldir: print('[{}]      {}'.format(ldir.index(i)+1, i))
+    break
