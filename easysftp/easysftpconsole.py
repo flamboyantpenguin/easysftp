@@ -90,9 +90,9 @@ initialise()
 
 
 #Interaction Phase
+ls()
 while 1:
-    ls()
-    ch = input('://')
+    ch = input('easysftp>')
     try: 
         if ch.isdigit():
             ch = int(ch)
@@ -103,11 +103,13 @@ while 1:
                 print(manual)
             elif ch == 'exit': exit(0)
             elif 'cd' in ch: sftp.chdir(ch.split()[1])
+            elif 'ls' in ch: ls()
             elif ch == 'cls' or ch == 'clear': system('cls')
             elif ch == 'version': print('\neasysftp 1.0.0 Stable\n')
             elif ch == 'about': system('cls'); print(about)
-            else: sftp.chdir(ch)
+            elif ch in ['', ' ']: continue
+            else: print('\aInvalid Command')
     except Exception as e:
-        print('Unexpected Error')
+        print('\aUnexpected Error')
         print(e)
         print('\nReport Errors at https://github.com/flamboyantpenguin/easysftp')
