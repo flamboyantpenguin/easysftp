@@ -1,1 +1,1 @@
-# easysftp 1.0.0
+# easysftp 1.0.0 Console Manual

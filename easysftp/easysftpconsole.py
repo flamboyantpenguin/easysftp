@@ -14,6 +14,12 @@ from os import mkdir, chdir, path, system
 ldir = []
 lAIcons = ['|', '/', '-', '\\']
 manual = 'Coming Soon...'
+about = '''
+easysftp 1.0.0
+An easy to use program for downloading files from a remote server via sftp
+Last Updated: 29-07-2023
+Made by DAWN/ペンギン
+'''
 
 
 def initialise():
@@ -22,7 +28,7 @@ def initialise():
     #Checking for config
     print('Checking for config files', end='', flush = True)
     clear()
-    if path.exists('config.bin'):
+    if path.exists('config.bin') and input('Do you want to load data from config (Y/N)? ').upper() == 'Y':
         with open('config.bin', 'rb') as config: data = load(config)
         #Connecting to server
         connect(data['host'], data['user'], data['key'], data['cPath'])
@@ -35,8 +41,7 @@ def initialise():
     user = input('Enter username: ')
     key = input('Enter password: ')
     cPath = input('Enter remote path: ')
-    ch = input('Do you want to store login info for furthur login? (Y/N)')
-    if ch.upper()[0] == 'Y':
+    if input('Do you want to store login info for furthur login? (Y/N) ').upper()[0] == 'Y':
         with open('config.bin', 'wb') as config: dump({'host': host, 'user': user, 'key': key, 'cPath': cPath}, config)
     connect(host, user, key, cPath)
     print('Connection Established Successfully')
@@ -80,7 +85,7 @@ def clear():
 #Startup
 system('echo on')
 print('easyftp 0.9 Pre-Alpha')
-print('A easy to use program for downloading files from a remote system via sftp')
+print('An easy to use program for downloading files from a remote server via sftp')
 initialise()
 
 
@@ -100,7 +105,7 @@ while 1:
             elif 'cd' in ch: sftp.chdir(ch.split()[1])
             elif ch == 'cls' or ch == 'clear': system('cls')
             elif ch == 'version': print('\neasysftp 1.0.0 Stable\n')
-            elif ch == 'about': print('Coming Soon...')
+            elif ch == 'about': system('cls'); print(about)
             else: sftp.chdir(ch)
     except Exception as e:
         print('Unexpected Error')
