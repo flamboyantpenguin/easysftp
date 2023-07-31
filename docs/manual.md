@@ -2,7 +2,7 @@
 
 Info on Navigation and Basic Commands
 
-## Basic Navigation
+## Navigation
 
 For navigating/downloading files, type the number of the corressponding file/directory
 
