@@ -5,7 +5,9 @@
 
 
 import pysftp
+from sys import platform
 from time import sleep
+from getpass import getpass
 from threading import Thread
 from pickle import load, dump
 from os import mkdir, chdir, path, system
@@ -39,7 +41,7 @@ def initialise():
     #Connecting to server
     host = input('Enter hostname: ')
     user = input('Enter username: ')
-    key = input('Enter password: ')
+    key = getpass('Enter password: ')
     cPath = input('Enter remote path: ')
     if input('Do you want to store login info for furthur login? (Y/N) ').upper()[0] == 'Y':
         with open('config.bin', 'wb') as config: dump({'host': host, 'user': user, 'key': key, 'cPath': cPath}, config)
@@ -70,9 +72,10 @@ def get(file):
     fileDownload.daemon = True
     fileDownload.start()
     while fileDownload.is_alive():
-        print('Downloading {} {}'.format(file, lAIcons[k]), flush=True, end='')
+        print('Downloading {} [{}]'.format(file, lAIcons[k]), flush=True, end='')
         k = k+1 if k < 3 else 0
         clear()
+    clear()
     print('\nFile Downloaded successfully')
 
 
@@ -82,8 +85,13 @@ def clear():
     return 0
 
 
+def clearConsole():
+    if platform == 'linux': system('clear')
+    else: system('cls')
+
+
 #Startup
-system('echo on')
+if platform != 'linux': system('echo on')
 print('easyftp 0.9 Pre-Alpha')
 print('An easy to use program for downloading files from a remote server via sftp')
 initialise()
@@ -96,15 +104,15 @@ while 1:
     try: 
         if ch.isdigit():
             ch = int(ch)
-            if sftp.isdir(ldir[ch-1]): sftp.chdir(ldir[ch-1]); continue
+            if sftp.isdir(ldir[ch-1]): sftp.chdir(ldir[ch-1]); ls(); continue
             else: get(ldir[ch-1]); continue
         else: 
             if ch == 'help':
                 print(manual)
             elif ch == 'exit': exit(0)
-            elif 'cd' in ch: sftp.chdir(ch.split()[1])
+            elif 'cd' in ch: sftp.chdir(ch.split()[1]); ls()
             elif 'ls' in ch: ls()
-            elif ch == 'cls' or ch == 'clear': system('cls')
+            elif ch == 'cls' or ch == 'clear': clearConsole()
             elif ch == 'version': print('\neasysftp 1.0.0 Stable\n')
             elif ch == 'about': system('cls'); print(about)
             elif ch in ['', ' ']: continue
