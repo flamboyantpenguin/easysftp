@@ -4,27 +4,27 @@
 #Made by DAWN/ペンギン
 
 
+import sys
 import pysftp
-from sys import platform
 from time import sleep
 from getpass import getpass
 from threading import Thread
 from pickle import load, dump
-from os import mkdir, chdir, path, system
+from os import mkdir, chdir, path, system, getcwd
 
 
 ldir = []
 lAIcons = ['|', '/', '-', '\\']
 manual = 'Coming Soon...'
-about = '''
-easysftp 1.0.0
-An easy to use program for downloading files from a remote server via sftp
-Last Updated: 29-07-2023
-Made by DAWN/ペンギン
-'''
+
 
 
 def initialise():
+    global assetPath
+    if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
+        assetPath = path.dirname(__file__)+'\\assets'
+    else:
+        assetPath = getcwd()+'\\assets'
     #Creating Local Directories
     if path.exists('Downloads') == False: mkdir('Downloads')
     #Checking for config
@@ -86,12 +86,21 @@ def clear():
 
 
 def clearConsole():
-    if platform == 'linux': system('clear')
+    if sys.platform == 'linux': system('clear')
     else: system('cls')
 
 
+def displayAbout():
+    with open(assetPath+'\\about.txt', 'r') as about:
+        print(about.read())
+
+def displayManual():
+    with open(assetPath+'\\manual.txt', 'r') as manual:
+        print(manual.read())
+
+
 #Startup
-if platform != 'linux': system('echo on')
+if sys.platform != 'linux': system('echo on')
 print('easyftp 0.9 Pre-Alpha')
 print('An easy to use program for downloading files from a remote server via sftp')
 initialise()
@@ -107,14 +116,13 @@ while 1:
             if sftp.isdir(ldir[ch-1]): sftp.chdir(ldir[ch-1]); ls(); continue
             else: get(ldir[ch-1]); continue
         else: 
-            if ch == 'help':
-                print(manual)
+            if ch == 'help': displayManual()
             elif ch == 'exit': exit(0)
             elif 'cd' in ch: sftp.chdir(ch.split()[1]); ls()
             elif 'ls' in ch: ls()
             elif ch == 'cls' or ch == 'clear': clearConsole()
             elif ch == 'version': print('\neasysftp 1.0.0 Stable\n')
-            elif ch == 'about': system('cls'); print(about)
+            elif ch == 'about': system('cls'); displayAbout()
             elif ch in ['', ' ']: continue
             else: print('\aInvalid Command')
     except Exception as e:
