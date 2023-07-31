@@ -117,7 +117,7 @@ while 1:
             else: get(ldir[ch-1]); continue
         else: 
             if ch == 'help': displayManual()
-            elif ch == 'exit': exit(0)
+            elif ch == 'exit': sys.exit(0)
             elif 'cd' in ch: sftp.chdir(ch.split()[1]); ls()
             elif 'ls' in ch: ls()
             elif ch == 'cls' or ch == 'clear': clearConsole()
