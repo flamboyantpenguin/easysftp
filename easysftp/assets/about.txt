@@ -1,4 +1,4 @@
-easysftp 1.0.0
+easysftp 1.2.0
 An easy to use program for downloading files from a remote server via sftp
-Last Updated: 29-07-2023
+Last Updated: 01-08-2023
 Made by DAWN/ペンギン
