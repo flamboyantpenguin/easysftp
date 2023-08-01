@@ -1,15 +1,16 @@
-#easysftp 1.0.0
+#easysftp 1.2.0
 #An easy to use console based client for Downloading files from a remote server using sftp
 #Program made using pysftp
 #Made by DAWN/ペンギン
 
 
 import sys
-import pysftp
+import themes
 from time import sleep
 from getpass import getpass
 from threading import Thread
 from pickle import load, dump
+from paramiko import SSHClient, AutoAddPolicy
 from os import mkdir, chdir, path, system, getcwd
 
 
@@ -53,7 +54,15 @@ def initialise():
 
 def connect(host, user, key, cPath):
     global sftp
-    sftp = pysftp.Connection(host, username=user, password=key)
+    connection = SSHClient()
+    connection.set_missing_host_key_policy(AutoAddPolicy())
+    try: 
+        connection.connect(hostname=host, username=user, password=key)
+    except:
+        print('Cannot connect to server. Check your password and try again')
+        sys.exit()
+    sftp = connection.open_sftp()
+    sftp.listdir()
     if cPath != '': sftp.chdir(cPath)
     
 
@@ -68,7 +77,7 @@ def ls():
 def get(file):
     k = 0
     print('Starting Download...')
-    fileDownload = Thread(target=sftp.get, args=(file, ))
+    fileDownload = Thread(target=sftp.get, args=(file, file))
     fileDownload.daemon = True
     fileDownload.start()
     while fileDownload.is_alive():
@@ -77,6 +86,16 @@ def get(file):
         clear()
     clear()
     print('\nFile Downloaded successfully')
+
+
+def isDir(dir):
+    try: 
+        sftp.chdir(dir)
+        sftp.chdir('..')
+        return True
+    except:
+        return False
+
 
 
 def clear():
@@ -91,8 +110,10 @@ def clearConsole():
 
 
 def displayAbout():
+    themes.setColor(themes.green)
     with open(assetPath+'\\about.txt', 'r') as about:
         print(about.read())
+    themes.setColor(themes.reset)
 
 def displayManual():
     with open(assetPath+'\\manual.txt', 'r') as manual:
@@ -101,19 +122,19 @@ def displayManual():
 
 #Startup
 if sys.platform != 'linux': system('echo on')
-print('easyftp 0.9 Pre-Alpha')
-print('An easy to use program for downloading files from a remote server via sftp')
+print(themes.blue, 'easyftp 1.2.0', sep='')
+print('An easy to use program for downloading files from a remote server via sftp', themes.reset, sep='')
 initialise()
 
 
 #Interaction Phase
 ls()
 while 1:
-    ch = input('easysftp>')
+    ch = input(themes.blue+'easysftp>'+themes.reset)
     try: 
         if ch.isdigit():
             ch = int(ch)
-            if sftp.isdir(ldir[ch-1]): sftp.chdir(ldir[ch-1]); ls(); continue
+            if isDir(ldir[ch-1]): sftp.chdir(ldir[ch-1]); ls(); continue
             else: get(ldir[ch-1]); continue
         else: 
             if ch == 'help': displayManual()
@@ -125,7 +146,9 @@ while 1:
             elif ch == 'about': system('cls'); displayAbout()
             elif ch in ['', ' ']: continue
             else: print('\aInvalid Command')
-    except Exception as e:
+    except Exception as error:
+        themes.setColor(themes.red)
         print('\aUnexpected Error')
-        print(e)
+        print(error)
+        themes.setColor(themes.reset)
         print('\nReport Errors at https://github.com/flamboyantpenguin/easysftp')
