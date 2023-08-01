@@ -77,7 +77,7 @@ def ls():
 def get(file):
     k = 0
     print('Starting Download...')
-    fileDownload = Thread(target=sftp.get, args=(file, ))
+    fileDownload = Thread(target=sftp.get, args=(file, file))
     fileDownload.daemon = True
     fileDownload.start()
     while fileDownload.is_alive():
@@ -86,6 +86,16 @@ def get(file):
         clear()
     clear()
     print('\nFile Downloaded successfully')
+
+
+def isDir(dir):
+    try: 
+        sftp.chdir(dir)
+        sftp.chdir('..')
+        return True
+    except:
+        return False
+
 
 
 def clear():
@@ -124,7 +134,7 @@ while 1:
     try: 
         if ch.isdigit():
             ch = int(ch)
-            if ldir[ch-1] in ldir: sftp.chdir(ldir[ch-1]); ls(); continue
+            if isDir(ldir[ch-1]): sftp.chdir(ldir[ch-1]); ls(); continue
             else: get(ldir[ch-1]); continue
         else: 
             if ch == 'help': displayManual()
