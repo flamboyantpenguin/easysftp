@@ -11,9 +11,7 @@ import connector
 from time import sleep
 from getpass import getpass
 from threading import Thread
-from pickle import load, dump
-
-from os import mkdir, chdir, path, system, startfile
+from os import mkdir, path, system
 
 
 ldir = []
@@ -26,7 +24,7 @@ def initialise():
     global assetPath, downloadDir
     if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
         #Fetching from pyinstaller bundles
-        assetPath = path.dirname(__file__)+'\\docs'
+        assetPath = path.dirname(__file__)+'/docs'
     else:
         #Fetching from local directory
         #assetPath = getcwd()+'\\assets'
@@ -50,7 +48,6 @@ def initialise():
             connector.saveConfig(data)
     connector.connect(data['host'], data['user'], data['key'], data['cPath'])
     print('Connection Established Successfully')
-    chdir('Downloads')
     return 0
 
 
@@ -141,7 +138,7 @@ def checkUpdate():
                     clear()
                 print('Lauching new version...')
                 print(newVersion[:3])
-                startfile('easysftp-{}.exe'.format(newVersion[:3]))
+                #startfile('easysftp-{}.exe'.format(newVersion[:3]))
                 sys.exit()
             return 1
     except Exception as e:
