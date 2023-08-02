@@ -11,7 +11,7 @@ from getpass import getpass
 from threading import Thread
 from pickle import load, dump
 from paramiko import SSHClient, AutoAddPolicy
-from os import mkdir, chdir, path, system, getcwd
+from os import mkdir, chdir, path, system
 
 
 ldir = []
@@ -78,6 +78,7 @@ def ls():
 
 def get(file):
     k = 0
+    if file.isdigit(): file = ldir[int(file)-1]
     print('Starting Download...')
     fileDownload = Thread(target=sftp.get, args=(file, downloadDir+'/'+file))
     fileDownload.daemon = True
@@ -88,6 +89,21 @@ def get(file):
         clear()
     clear()
     print('\nFile Downloaded successfully')
+
+
+def put(file):
+    k = 0
+    if file.isdigit(): file = ldir[int(file)-1]
+    print('Starting Upload...')
+    fileDownload = Thread(target=sftp.put, args=(file, file))
+    fileDownload.daemon = True
+    fileDownload.start()
+    while fileDownload.is_alive():
+        print('Uploading {} [{}]'.format(file, lAIcons[k]), flush=True, end='')
+        k = k+1 if k < len(lAIcons)-1 else 0
+        clear()
+    clear()
+    print('\nFile Uploaded successfully')
 
 
 def isDir(dir):
@@ -137,7 +153,7 @@ while 1:
         if ch.isdigit():
             ch = int(ch)
             if isDir(ldir[ch-1]): sftp.chdir(ldir[ch-1]); ls(); continue
-            else: get(ldir[ch-1]); continue
+            else: get(str(ch)); continue
         elif ch == '.' or ch == '..':
             sftp.chdir(ch)
             ls()
@@ -145,9 +161,11 @@ while 1:
             if ch == 'help': displayManual()
             elif ch == 'exit': sys.exit(0)
             elif 'cd' in ch: sftp.chdir(ch.split()[1]); ls()
+            elif 'get' in ch: get(ch.split()[1]); ls()
+            elif 'put' in ch: put(ch.split()[1]); ls()
             elif 'ls' in ch: ls()
             elif ch == 'cls' or ch == 'clear': clearConsole()
-            elif ch == 'version': print('\neasysftp 1.0.0 Stable\n')
+            elif ch == 'version': print('\neasysftp 1.5.0 Stable\n')
             elif ch == 'about': system('cls'); displayAbout()
             elif ch in ['', ' ']: continue
             else: print('\aInvalid Command')

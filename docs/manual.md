@@ -39,3 +39,5 @@ Displays version info
 ### `about`
 
 Displays program info
+
+    Last Updated: 02-08-2023

@@ -29,5 +29,5 @@ _____Commands_____
 > about
     Displays the about page
 
-Last Updated: 01-08-2023
+Last Updated: 02-08-2023
     
