@@ -1,4 +1,4 @@
-#easysftp 1.2.0
+#easysftp 1.5.0
 #An easy to use console based client for Downloading files from a remote server using sftp
 #Program made using pysftp
 #Made by DAWN/ペンギン
@@ -11,23 +11,26 @@ from getpass import getpass
 from threading import Thread
 from pickle import load, dump
 from paramiko import SSHClient, AutoAddPolicy
-from os import mkdir, chdir, path, system, getcwd
+from os import mkdir, chdir, path, system
 
 
 ldir = []
-lAIcons = ['|', '/', '-', '\\']
-manual = 'Coming Soon...'
-
+lAIcons = ['|', '/', '-', '\\'] #Loading Animation Characters
 
 
 def initialise():
-    global assetPath
+    #For fetching assets
+    global assetPath, downloadDir
     if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
-        assetPath = path.dirname(__file__)+'\\assets'
+        #Fetching from pyinstaller bundles
+        assetPath = path.dirname(__file__)+'\\docs'
     else:
-        assetPath = getcwd()+'\\assets'
+        #Fetching from local directory
+        #assetPath = getcwd()+'\\assets'
+        assetPath = '../docs'
     #Creating Local Directories
     if path.exists('Downloads') == False: mkdir('Downloads')
+    downloadDir = 'Downloads'
     #Checking for config
     print('Checking for config files', end='', flush = True)
     clear()
@@ -36,7 +39,6 @@ def initialise():
         #Connecting to server
         connect(data['host'], data['user'], data['key'], data['cPath'])
         print('Connection Established Successfully')
-        chdir('Downloads')
         return 0
     print()
     #Connecting to server
@@ -52,14 +54,14 @@ def initialise():
     return 0
 
 
-def connect(host, user, key, cPath):
+def connect(host, user, key, cPath = ''):
     global sftp
     connection = SSHClient()
     connection.set_missing_host_key_policy(AutoAddPolicy())
     try: 
         connection.connect(hostname=host, username=user, password=key)
     except:
-        print('Cannot connect to server. Check your password and try again')
+        print(themes.red, 'Cannot connect to server. Check your password and try again', themes.reset, sep = '')
         sys.exit()
     sftp = connection.open_sftp()
     sftp.listdir()
@@ -76,16 +78,32 @@ def ls():
 
 def get(file):
     k = 0
+    if file.isdigit(): file = ldir[int(file)-1]
     print('Starting Download...')
-    fileDownload = Thread(target=sftp.get, args=(file, file))
+    fileDownload = Thread(target=sftp.get, args=(file, downloadDir+'/'+file))
     fileDownload.daemon = True
     fileDownload.start()
     while fileDownload.is_alive():
         print('Downloading {} [{}]'.format(file, lAIcons[k]), flush=True, end='')
-        k = k+1 if k < 3 else 0
+        k = k+1 if k < len(lAIcons)-1 else 0
         clear()
     clear()
     print('\nFile Downloaded successfully')
+
+
+def put(file):
+    k = 0
+    if file.isdigit(): file = ldir[int(file)-1]
+    print('Starting Upload...')
+    fileDownload = Thread(target=sftp.put, args=(file, file))
+    fileDownload.daemon = True
+    fileDownload.start()
+    while fileDownload.is_alive():
+        print('Uploading {} [{}]'.format(file, lAIcons[k]), flush=True, end='')
+        k = k+1 if k < len(lAIcons)-1 else 0
+        clear()
+    clear()
+    print('\nFile Uploaded successfully')
 
 
 def isDir(dir):
@@ -95,7 +113,6 @@ def isDir(dir):
         return True
     except:
         return False
-
 
 
 def clear():
@@ -111,18 +128,19 @@ def clearConsole():
 
 def displayAbout():
     themes.setColor(themes.green)
-    with open(assetPath+'\\about.txt', 'r') as about:
+    with open(assetPath+'/about.txt', 'r') as about:
         print(about.read())
     themes.setColor(themes.reset)
 
+
 def displayManual():
-    with open(assetPath+'\\manual.txt', 'r') as manual:
+    with open(assetPath+'/manual.txt', 'r') as manual:
         print(manual.read())
 
 
 #Startup
 if sys.platform != 'linux': system('echo on')
-print(themes.blue, 'easyftp 1.2.0', sep='')
+print(themes.cyan, 'easyftp 1.2.0', sep='')
 print('An easy to use program for downloading files from a remote server via sftp', themes.reset, sep='')
 initialise()
 
@@ -130,19 +148,24 @@ initialise()
 #Interaction Phase
 ls()
 while 1:
-    ch = input(themes.blue+'easysftp>'+themes.reset)
+    ch = input('easysftp>')
     try: 
         if ch.isdigit():
             ch = int(ch)
             if isDir(ldir[ch-1]): sftp.chdir(ldir[ch-1]); ls(); continue
-            else: get(ldir[ch-1]); continue
+            else: get(str(ch)); continue
+        elif ch == '.' or ch == '..':
+            sftp.chdir(ch)
+            ls()
         else: 
             if ch == 'help': displayManual()
             elif ch == 'exit': sys.exit(0)
             elif 'cd' in ch: sftp.chdir(ch.split()[1]); ls()
+            elif 'get' in ch: get(ch.split()[1]); ls()
+            elif 'put' in ch: put(ch.split()[1]); ls()
             elif 'ls' in ch: ls()
             elif ch == 'cls' or ch == 'clear': clearConsole()
-            elif ch == 'version': print('\neasysftp 1.0.0 Stable\n')
+            elif ch == 'version': print('\neasysftp 1.5.0 Stable\n')
             elif ch == 'about': system('cls'); displayAbout()
             elif ch in ['', ' ']: continue
             else: print('\aInvalid Command')

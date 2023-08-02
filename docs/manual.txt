@@ -1,4 +1,4 @@
-----------easysftp 1.2.0 Console Manual----------
+----------easysftp 1.5.0 Console Manual----------
 
 _____Navigation_____
 For navigating/downloading files, type the number of the corressponding file/directory
@@ -7,6 +7,12 @@ For navigating/downloading files, type the number of the corressponding file/dir
 _____Commands_____
 > cd <path>
     Changes the current working directory to a specific path
+
+> get <filename/number>
+    Downloads a file from the server
+
+> put <filename/number>
+    Uploads a file to the server
 
 > ls
     Displays the files in the current directory
@@ -23,5 +29,5 @@ _____Commands_____
 > about
     Displays the about page
 
-Last Updated: 01-08-2023
+Last Updated: 02-08-2023
     
