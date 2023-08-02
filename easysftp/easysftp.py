@@ -7,7 +7,7 @@
 import sys
 import themes
 import requests
-import connectionmanager as cm
+import connector
 from time import sleep
 from getpass import getpass
 from threading import Thread
@@ -38,7 +38,7 @@ def initialise():
     print('Checking for config files', end='', flush = True)
     clear()
     if path.exists('config.bin') and input('Do you want to load data from config (Y/N)? ').upper() == 'Y':
-        data = cm.loadConfig()
+        data = connector.loadConfig()
     else: 
         print()
         host = input('Enter hostname: ')
@@ -47,8 +47,8 @@ def initialise():
         cPath = input('Enter remote path: ')
         data = {'host': host, 'user': user, 'key': key, 'cPath': cPath}
         if input('Do you want to store login info for furthur login? (Y/N) ').upper()[0] == 'Y':
-            cm.saveConfig(data)
-    #cm.connect(host, user, key, cPath)
+            connector.saveConfig(data)
+    connector.connect(data['host'], data['user'], data['key'], data['cPath'])
     print('Connection Established Successfully')
     chdir('Downloads')
     return 0
@@ -58,7 +58,7 @@ def get(file):
     k = 0
     if file.isdigit(): file = ldir[int(file)-1]
     print('Starting Download...')
-    fileDownload = Thread(target=cm.sftp.get, args=(file, downloadDir+'/'+file))
+    fileDownload = Thread(target=connector.sftp.get, args=(file, downloadDir+'/'+file))
     fileDownload.daemon = True
     fileDownload.start()
     while fileDownload.is_alive():
@@ -73,7 +73,7 @@ def put(file):
     k = 0
     if file.isdigit(): file = ldir[int(file)-1]
     print('Starting Upload...')
-    fileDownload = Thread(target=cm.sftp.put, args=(file, file))
+    fileDownload = Thread(target=connector.sftp.put, args=(file, file))
     fileDownload.daemon = True
     fileDownload.start()
     while fileDownload.is_alive():
@@ -86,8 +86,8 @@ def put(file):
 
 def ls():
     global ldir
-    print('Current Directory: {}\n'.format(cm.sftp.getcwd()))
-    ldir = cm.sftp.listdir()
+    print('Current Directory: {}\n'.format(connector.sftp.getcwd()))
+    ldir = connector.sftp.listdir()
     for i in ldir: print('[{}]\t\t{}'.format(ldir.index(i)+1, i))
     print()
 
@@ -164,15 +164,15 @@ while 1:
     try: 
         if ch.isdigit():
             ch = int(ch)
-            if cm.isDir(ldir[ch-1]): cm.sftp.chdir(ldir[ch-1]); ls(); continue
+            if connector.isDir(ldir[ch-1]): connector.sftp.chdir(ldir[ch-1]); ls(); continue
             else: get(str(ch)); continue
         elif ch == '.' or ch == '..':
-            cm.sftp.chdir(ch)
+            connector.sftp.chdir(ch)
             ls()
         else: 
             if ch == 'help': displayManual()
             elif ch == 'exit': sys.exit(0)
-            elif 'cd' in ch: cm.sftp.chdir(ch.split()[1]); ls()
+            elif 'cd' in ch: connector.sftp.chdir(ch.split()[1]); ls()
             elif 'get' in ch: get(ch.split()[1]); ls()
             elif 'put' in ch: put(ch.split()[1]); ls()
             elif 'ls' in ch: ls()
