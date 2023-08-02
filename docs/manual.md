@@ -1,4 +1,4 @@
-# easysftp 1.0.0 Console Manual
+# easysftp 1.5.0 Console Manual
 
 Info on Navigation and Basic Commands
 
@@ -8,13 +8,19 @@ For navigating/downloading files, type the number of the corressponding file/dir
 
 ## Commands
 
-
-
 ### `cd <path>`
 
 Changes the current working directory to a specific path
 
-### `ls` 
+### `get <filename/number>`
+
+Downloads a file from the server
+
+### `put <filename/number>`
+
+Uploads a file to the server
+
+### `ls`
 
 Displays the files in the current directory
 
@@ -32,4 +38,4 @@ Displays version info
 
 ### `about`
 
-Displays the about page
+Displays program info

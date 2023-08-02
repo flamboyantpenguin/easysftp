@@ -1,3 +1,6 @@
 .vscode
 easysftp/config.bin
 easysftp/Downloads
+easysftp/__pycache__
+pyinstaller/build
+pyinstaller/dist
