@@ -80,7 +80,7 @@ def get(file):
     k = 0
     if file.isdigit(): file = ldir[int(file)-1]
     print('Starting Download...')
-    fileDownload = Thread(target=sftp.get, args=(file, downloadDir+'/'+file))
+    fileDownload = Thread(target=sftp.get, args=(file, './'+downloadDir+'/'+file))
     fileDownload.daemon = True
     fileDownload.start()
     while fileDownload.is_alive():
