@@ -89,7 +89,7 @@ Upon successfull login to a server, you will be asked whether to save login info
 ## About
 
 ```Txt
-easysftp 1.5.0
+easysftp 1.8.0
 
 Last Updated: 02-08-2023
 
