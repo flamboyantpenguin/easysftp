@@ -1,4 +1,4 @@
-----------easysftp 1.5.0 Console Manual----------
+----------easysftp 1.8.0 Console Manual----------
 
 _____Navigation_____
 For navigating/downloading files, type the number of the corressponding file/directory
@@ -25,6 +25,9 @@ _____Commands_____
 
 > version
     Displays version info
+
+> checkupdate
+    Checks for the latest version of easysftp
 
 > about
     Displays the about page

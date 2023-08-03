@@ -1,4 +1,4 @@
-# easysftp 1.5.0 Console Manual
+# easysftp 1.8.0 Console Manual
 
 Info on Navigation and Basic Commands
 

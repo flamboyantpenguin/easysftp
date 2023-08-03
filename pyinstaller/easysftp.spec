@@ -5,7 +5,7 @@ block_cipher = None
 
 
 a = Analysis(
-    ['..\\easysftp\\easysftpconsole.py'],
+    ['../easysftp/easysftp.py'],
     pathex=[],
     binaries=[],
     datas=[('../docs/*.txt', 'docs')],
@@ -28,7 +28,7 @@ exe = EXE(
     a.zipfiles,
     a.datas,
     [],
-    name='easysftp-1.5',
+    name='easysftp-1.8',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
