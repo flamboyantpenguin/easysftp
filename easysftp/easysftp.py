@@ -14,6 +14,9 @@ from threading import Thread
 from os import mkdir, path, system
 
 
+if sys.platform == 'win32': from os import startfile
+
+
 ldir = []
 lAIcons = ['|', '/', '-', '\\'] #Loading Animation Characters
 version = '1.8.0'
@@ -113,7 +116,11 @@ def displayManual():
 
 
 def downloadUpdate(newVersion):
-    fileResponse = requests.get(url = 'https://github.com/flamboyantpenguin/easysftp/releases/latest/download/easysftp-{}.exe'.format(newVersion[:3]), allow_redirects=True)
+    if sys.platform != 'linux': 
+        url = 'https://github.com/flamboyantpenguin/easysftp/releases/latest/download/easysftp-{}.exe'.format(newVersion[:3])
+    else: 
+        url = 'https://github.com/flamboyantpenguin/easysftp/releases/latest/download/easysftp-linux-amd64.tar.gz'
+        fileResponse = requests.get(url = url, allow_redirects=True)
     with open('easysftp-{}.exe'.format(newVersion[:3]), 'wb') as file:
         file.write(fileResponse.content)
     print('\nUpdate Downloaded Successfully!')
@@ -136,9 +143,8 @@ def checkUpdate():
                     print('Downloading easysftp-{} [{}]'.format(newVersion, lAIcons[k]), flush=True, end='')
                     k = k+1 if k < len(lAIcons)-1 else 0
                     clear()
-                print('Lauching new version...')
                 print(newVersion[:3])
-                #startfile('easysftp-{}.exe'.format(newVersion[:3]))
+                if sys.platform == 'win32': startfile('easysftp-{}.exe'.format(newVersion[:3]))
                 sys.exit()
             return 1
     except Exception as e:
