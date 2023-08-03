@@ -118,6 +118,7 @@ def displayManual():
 def downloadUpdate(newVersion):
     if sys.platform != 'linux': 
         url = 'https://github.com/flamboyantpenguin/easysftp/releases/latest/download/easysftp-{}.exe'.format(newVersion[:3])
+        fileResponse = requests.get(url = url, allow_redirects=True)
     else: 
         url = 'https://github.com/flamboyantpenguin/easysftp/releases/latest/download/easysftp-linux-amd64.tar.gz'
         fileResponse = requests.get(url = url, allow_redirects=True)
