@@ -5,11 +5,11 @@ block_cipher = None
 
 
 a = Analysis(
-    ['../easysftp/easysftp.py'],
+    ['..\\easysftp\\easysftp.py'],
     pathex=[],
     binaries=[],
     datas=[('../docs/*.txt', 'docs')],
-    hiddenimports=['bses_ph03'],
+    hiddenimports=[],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
@@ -28,7 +28,7 @@ exe = EXE(
     a.zipfiles,
     a.datas,
     [],
-    name='easysftp-1.8',
+    name='easysftp-2.0',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
