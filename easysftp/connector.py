@@ -4,7 +4,7 @@
 #Made by DAWN/ペンギン
 
 
-import bses_ph03 as bses
+import bses03 as bses
 from pickle import loads, dumps
 from paramiko import SSHClient, AutoAddPolicy
 
