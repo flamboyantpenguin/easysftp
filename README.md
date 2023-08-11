@@ -28,7 +28,7 @@ To learn more about the installer, refer installer manual.
 
 ## Downloading Source
 
-To download the source, clone this repository using git or download the source from the [latest release](https://github.com/flamboyantpenguin/easysftp/releases/latest/download).
+To download the source, clone this repository using git or download the source from the [latest release](https://github.com/flamboyantpenguin/easysftp/releases/latest).
 
 `git clone https://github.com/flamboyantpenguin/easysftp`
 
