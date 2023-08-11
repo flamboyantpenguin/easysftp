@@ -1,7 +1,7 @@
-#easysftp console 1.8.0
-#An easy to use console based client for Downloading files from a remote server using sftp
-#Program made with paramiko
-#Made by DAWN/ペンギン
+# easysftp console 1.8.0
+# An easy to use console based client for transferring files via sftp
+# Program made with paramiko
+# Made by DAWN/ペンギン
 
 
 import sys
@@ -18,29 +18,29 @@ if sys.platform == 'win32': from os import startfile
 
 
 ldir = []
-lAIcons = ['|', '/', '-', '\\'] #Loading Animation Characters
+lAIcons = ['|', '/', '-', '\\']  # Loading Animation Characters
 version = '1.8.0'
 
 
 def initialise():
-    #For fetching assets
+    # For fetching assets
     global assetPath, downloadDir
     if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
-        #Fetching from pyinstaller bundles
+        # Fetching from pyinstaller bundles
         assetPath = path.dirname(__file__)+'/docs'
     else:
-        #Fetching from local directory
-        #assetPath = getcwd()+'\\assets'
+        # Fetching from local directory
+        # assetPath = getcwd()+'\\assets'
         assetPath = '../docs'
-    #Creating Local Directories
+    # Creating Local Directories
     if path.exists('Downloads') == False: mkdir('Downloads')
     downloadDir = 'Downloads'
-    #Checking for config
+    # Checking for config
     print('Checking for config files', end='', flush = True)
     clear()
     if path.exists('config.bin') and input('Do you want to load data from config (Y/N)? ').upper() == 'Y':
         data = connector.loadConfig()
-    else: 
+    else:
         print()
         host = input('Enter hostname: ')
         user = input('Enter username: ')
@@ -116,10 +116,10 @@ def displayManual():
 
 
 def downloadUpdate(newVersion):
-    if sys.platform != 'linux': 
+    if sys.platform != 'linux':
         url = 'https://github.com/flamboyantpenguin/easysftp/releases/latest/download/easysftp-{}.exe'.format(newVersion[:3])
         fileResponse = requests.get(url = url, allow_redirects=True)
-    else: 
+    else:
         url = 'https://github.com/flamboyantpenguin/easysftp/releases/latest/download/easysftp-linux-amd64.tar.gz'
         fileResponse = requests.get(url = url, allow_redirects=True)
     with open('easysftp-{}.exe'.format(newVersion[:3]), 'wb') as file:
@@ -128,7 +128,7 @@ def downloadUpdate(newVersion):
 
 
 def checkUpdate():
-    try: 
+    try:
         response = requests.get('https://api.github.com/repos/flamboyantpenguin/easysftp/releases/latest')
         newVersion = response.json()['name'].split()[1]
         if newVersion == version:
@@ -153,7 +153,7 @@ def checkUpdate():
         print(themes.red, 'Error Checking for Updates\n', themes.reset, sep = '')
 
 
-#Startup
+# Startup
 if sys.platform != 'linux': system('echo on')
 checkUpdate()
 print(themes.cyan, 'easyftp 1.8.0', sep='')
@@ -161,11 +161,11 @@ print('An easy to use program for downloading files from a remote server via sft
 initialise()
 
 
-#Interaction Phase
+# Interaction Phase
 ls()
 while 1:
     ch = input('easysftp>')
-    try: 
+    try:
         if ch.isdigit():
             ch = int(ch)
             if connector.isDir(ldir[ch-1]): connector.sftp.chdir(ldir[ch-1]); ls(); continue
@@ -173,7 +173,7 @@ while 1:
         elif ch == '.' or ch == '..':
             connector.sftp.chdir(ch)
             ls()
-        else: 
+        else:
             if ch == 'help': displayManual()
             elif ch == 'exit': sys.exit(0)
             elif 'cd' in ch: connector.sftp.chdir(ch.split()[1]); ls()
@@ -182,8 +182,8 @@ while 1:
             elif 'ls' in ch: ls()
             elif ch == 'cls' or ch == 'clear': clearConsole()
             elif ch == 'version': print('\neasysftp 1.8.0 Pre-Alpha\n')
-            elif ch == 'checkupdate': 
-                if not checkUpdate():
+            elif ch == 'checkupdate':
+                if checkUpdate() is False:
                     print('The software is up to date. For downloading other versions, go to https://github.com/flamboyantpenguin/easysftp/releases')
             elif ch == 'about': system('cls'); displayAbout()
             elif ch in ['', ' ']: continue
