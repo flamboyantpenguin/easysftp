@@ -5,7 +5,7 @@ block_cipher = None
 
 
 a = Analysis(
-    ['..\\easysftp\\easysftp.py'],
+    ['../easysftp/easysftp.py'],
     pathex=[],
     binaries=[],
     datas=[('../docs/*.txt', 'docs')],
