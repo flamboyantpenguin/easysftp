@@ -1,5 +1,7 @@
 .vscode
 .venv
+config.bin
+Downloads
 easysftp/config.bin
 easysftp/Downloads
 easysftp/__pycache__
