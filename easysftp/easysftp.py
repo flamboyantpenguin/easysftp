@@ -9,6 +9,7 @@ import themes
 import requests
 import connector
 from time import sleep
+from subprocess import run
 from getpass import getpass
 from threading import Thread
 from os import mkdir, path, system
@@ -19,7 +20,7 @@ if sys.platform == 'win32': from os import startfile
 
 ldir = []
 lAIcons = ['|', '/', '-', '\\']  # Loading Animation Characters
-version = '1.8.0'
+version = '2.0.0'
 
 
 def initialise():
@@ -120,7 +121,7 @@ def downloadUpdate(newVersion):
         url = 'https://github.com/flamboyantpenguin/easysftp/releases/latest/download/easysftp-{}.exe'.format(newVersion[:3])
         fileResponse = requests.get(url = url, allow_redirects=True)
     else:
-        url = 'https://github.com/flamboyantpenguin/easysftp/releases/latest/download/easysftp-linux-amd64.tar.gz'
+        url = 'https://github.com/flamboyantpenguin/easysftp/releases/latest/download/easysftp-linux-installer.tar.gz'
         fileResponse = requests.get(url = url, allow_redirects=True)
     with open('easysftp-{}.exe'.format(newVersion[:3]), 'wb') as file:
         file.write(fileResponse.content)
@@ -146,6 +147,10 @@ def checkUpdate():
                     clear()
                 print(newVersion[:3])
                 if sys.platform == 'win32': startfile('easysftp-{}.exe'.format(newVersion[:3]))
+                else: 
+                    run('tar xzf easysftp-linux-installer')
+                    run('sudo ./install.sh')
+                    system()
                 sys.exit()
             return 1
     except Exception as e:
