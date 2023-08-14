@@ -134,6 +134,9 @@ def checkUpdate():
         newVersion = response.json()['name'].split()[1]
         if newVersion == version:
             return 0
+        elif sys.platform == 'linux': 
+            system('tar xzf easysftp-linux-installer.tar.gz')
+            run(['sudo ./install.sh'], shell=True)
         else:
             print(themes.cyan, 'easysftp {} is available'.format(newVersion), sep='')
             if input('Do you want to download the latest version? (Y/N) ').upper()[0] == 'Y':
@@ -150,9 +153,9 @@ def checkUpdate():
                 else: 
                     run('tar xzf easysftp-linux-installer')
                     run('sudo ./install.sh')
-                    system()
                 sys.exit()
             return 1
+
     except Exception as e:
         print(e)
         print(themes.red, 'Error Checking for Updates\n', themes.reset, sep = '')
