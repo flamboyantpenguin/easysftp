@@ -113,9 +113,8 @@ To run the program you need Python 3.10 or above especially since bses algorith 
 ## About
 
 ```Txt
-easysftp 1.8.0
+easysftp 2.0.0
 
-Last Updated: 02-08-2023
-
+Last Updated: 09-09-2023
 Made by DAWN/ペンギン
 ```

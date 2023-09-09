@@ -1,7 +1,8 @@
-# easysftp console 1.8.0
+# easysftp console 2.0.0
 # An easy to use console based client for transferring files via sftp
 # Program made with paramiko
 # Made by DAWN/ペンギン
+# Last Updated: 09-09-2023
 
 
 import sys
@@ -14,7 +15,7 @@ from getpass import getpass
 from threading import Thread
 from os import mkdir, path, system
 
-
+#os.starfile is not available for linux
 if sys.platform == 'win32': from os import startfile
 
 
@@ -134,11 +135,8 @@ def checkUpdate():
     try:
         response = requests.get('https://api.github.com/repos/flamboyantpenguin/easysftp/releases/latest')
         newVersion = response.json()['name'].split()[1]
-        if newVersion == version:
+        if newVersion >= version:
             return 0
-        elif sys.platform == 'linux': 
-            system('tar xzf easysftp-linux-installer.tar.gz')
-            run(['sudo ./install.sh'], shell=True)
         else:
             print(themes.cyan, 'easysftp {} is available'.format(newVersion), sep='')
             if input('Do you want to download the latest version? (Y/N) ').upper()[0] == 'Y':
@@ -150,11 +148,10 @@ def checkUpdate():
                     print('Downloading easysftp-{} [{}]'.format(newVersion, lAIcons[k]), flush=True, end='')
                     k = k+1 if k < len(lAIcons)-1 else 0
                     clear()
-                print(newVersion[:3])
                 if sys.platform == 'win32': startfile('easysftp-{}.exe'.format(newVersion[:3]))
                 else: 
-                    console('tar xzf easysftp-linux-installer')
-                    console('sudo ./install.sh')
+                    system('tar xzf easysftp-linux-installer.tar.gz')
+                    system('sudo ./install.sh')
                 sys.exit()
             return 1
 
@@ -166,7 +163,7 @@ def checkUpdate():
 # Startup
 if sys.platform != 'linux': system('echo on')
 checkUpdate()
-print(themes.cyan, 'easyftp 1.8.0', sep='')
+print(themes.cyan, 'easyftp 2.0.0', sep='')
 print('An easy to use program for downloading files from a remote server via sftp', themes.reset, sep='')
 initialise()
 
@@ -191,7 +188,7 @@ while 1:
             elif 'put' in ch: put(ch.split()[1]); ls()
             elif 'ls' in ch: ls()
             elif ch == 'cls' or ch == 'clear': clearConsole()
-            elif ch == 'version': print('\neasysftp 1.8.0 Pre-Alpha\n')
+            elif ch == 'version': print('\neasysftp 2.0.0 Pre-Alpha\n')
             elif ch == 'checkupdate':
                 if checkUpdate() is False:
                     print('The software is up to date. For downloading other versions, go to https://github.com/flamboyantpenguin/easysftp/releases')
