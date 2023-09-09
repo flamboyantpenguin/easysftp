@@ -6,7 +6,7 @@
 
 
 import sys
-import themes
+import cui as cui
 import requests
 import connector
 from time import sleep
@@ -14,13 +14,13 @@ from subprocess import run
 from getpass import getpass
 from threading import Thread
 from os import mkdir, path, system
+from multiprocessing import SimpleQueue
 
 #os.starfile is not available for linux
 if sys.platform == 'win32': from os import startfile
 
 
 ldir = []
-lAIcons = ['|', '/', '-', '\\']  # Loading Animation Characters
 version = '2.0.0'
 
 
@@ -56,33 +56,47 @@ def initialise():
     return 0
 
 
+def dProgress(queue, fname, lfile, action='D'):
+    info = connector.sftp.stat(fname)
+    fSize = round(int(info.st_size)/(1024*1024), 2) # type: ignore
+    while 1: 
+        if action == 'D':
+            lSize = round(path.getsize(lfile)/(1024*1024), 2)
+            progress = int((lSize/fSize)*100)
+        else: 
+            info = connector.sftp.stat(fname)
+            fSize = round(int(info.st_size)/(1024*1024), 2) # type: ignore
+            lSize = round(path.getsize(lfile)/(1024*1024), 2)
+            progress = int((fSize/lSize)*100)
+        queue.put(progress)
+        if progress == 100: break
+
+
 def get(file):
-    k = 0
+    queue = SimpleQueue()
     if file.isdigit(): file = ldir[int(file)-1]
     print('Starting Download...')
     fileDownload = Thread(target=connector.sftp.get, args=(file, downloadDir+'/'+file))
+    progress = Thread(target=dProgress, args=(queue, file, downloadDir+'/'+file, 'D'))
     fileDownload.daemon = True
+    progress.daemon = True
     fileDownload.start()
-    while fileDownload.is_alive():
-        print('Downloading {} [{}]'.format(file, lAIcons[k]), flush=True, end='')
-        k = k+1 if k < len(lAIcons)-1 else 0
-        clear()
-    clear()
+    progress.start()
+    cui.progressBar(fileDownload, queue, "Downloading")
     print('\nFile Downloaded successfully')
 
 
 def put(file):
-    k = 0
+    queue = SimpleQueue()
     if file.isdigit(): file = ldir[int(file)-1]
     print('Starting Upload...')
-    fileDownload = Thread(target=connector.sftp.put, args=(file, file))
-    fileDownload.daemon = True
-    fileDownload.start()
-    while fileDownload.is_alive():
-        print('Uploading {} [{}]'.format(file, lAIcons[k]), flush=True, end='')
-        k = k+1 if k < len(lAIcons)-1 else 0
-        clear()
-    clear()
+    fileUpload = Thread(target=connector.sftp.put, args=(file, file))
+    progress = Thread(target=dProgress, args=(queue, file, file, 'U'))
+    fileUpload.daemon = True
+    progress.daemon = True
+    fileUpload.start()
+    progress.start()
+    cui.progressBar(fileUpload, queue, "Uploading")
     print('\nFile Uploaded successfully')
 
 
@@ -106,10 +120,10 @@ def clearConsole():
 
 
 def displayAbout():
-    themes.setColor(themes.green)
+    cui.setColor(cui.green)
     with open(assetPath+'/about.txt', 'r') as about:
         print(about.read())
-    themes.setColor(themes.reset)
+    cui.setColor(cui.reset)
 
 
 def displayManual():
@@ -138,15 +152,15 @@ def checkUpdate():
         if newVersion >= version:
             return 0
         else:
-            print(themes.cyan, 'easysftp {} is available'.format(newVersion), sep='')
+            print(cui.cyan, 'easysftp {} is available'.format(newVersion), sep='')
             if input('Do you want to download the latest version? (Y/N) ').upper()[0] == 'Y':
                 k = 0
                 updateDownload = Thread(target=downloadUpdate, args=(newVersion, ))
                 updateDownload.daemon = True
                 updateDownload.start()
                 while updateDownload.is_alive():
-                    print('Downloading easysftp-{} [{}]'.format(newVersion, lAIcons[k]), flush=True, end='')
-                    k = k+1 if k < len(lAIcons)-1 else 0
+                    print('Downloading easysftp-{} [{}]'.format(newVersion, cui.lAIcons[k]), flush=True, end='')
+                    k = k+1 if k < len(cui.lAIcons)-1 else 0
                     clear()
                 if sys.platform == 'win32': startfile('easysftp-{}.exe'.format(newVersion[:3]))
                 else: 
@@ -157,14 +171,14 @@ def checkUpdate():
 
     except Exception as e:
         print(e)
-        print(themes.red, 'Error Checking for Updates\n', themes.reset, sep = '')
+        print(cui.red, 'Error Checking for Updates\n', cui.reset, sep = '')
 
 
 # Startup
 if sys.platform != 'linux': system('echo on')
 checkUpdate()
-print(themes.cyan, 'easyftp 2.0.0', sep='')
-print('An easy to use program for downloading files from a remote server via sftp', themes.reset, sep='')
+print(cui.cyan, 'easyftp 2.0.0', sep='')
+print('An easy to use program for downloading files from a remote server via sftp', cui.reset, sep='')
 initialise()
 
 
@@ -186,7 +200,7 @@ while 1:
             elif 'cd' in ch: connector.sftp.chdir(ch.split()[1]); ls()
             elif 'get' in ch: get(ch.split()[1]); ls()
             elif 'put' in ch: put(ch.split()[1]); ls()
-            elif 'ls' in ch: ls()
+            elif 'ls' in ch: ls() 
             elif ch == 'cls' or ch == 'clear': clearConsole()
             elif ch == 'version': print('\neasysftp 2.0.0 Pre-Alpha\n')
             elif ch == 'checkupdate':
@@ -196,8 +210,8 @@ while 1:
             elif ch in ['', ' ']: continue
             else: print('\aInvalid Command')
     except Exception as error:
-        themes.setColor(themes.red)
+        cui.setColor(cui.red)
         print('\aUnexpected Error')
         print(error)
-        themes.setColor(themes.reset)
+        cui.setColor(cui.reset)
         print('\nReport Errors at https://github.com/flamboyantpenguin/easysftp')
