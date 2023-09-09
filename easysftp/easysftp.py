@@ -120,10 +120,12 @@ def downloadUpdate(newVersion):
     if sys.platform != 'linux':
         url = 'https://github.com/flamboyantpenguin/easysftp/releases/latest/download/easysftp-{}.exe'.format(newVersion[:3])
         fileResponse = requests.get(url = url, allow_redirects=True)
+        fileName = "easysftp-{}.exe".format(newVersion[:3])
     else:
         url = 'https://github.com/flamboyantpenguin/easysftp/releases/latest/download/easysftp-linux-installer.tar.gz'
         fileResponse = requests.get(url = url, allow_redirects=True)
-    with open('easysftp-{}.exe'.format(newVersion[:3]), 'wb') as file:
+        fileName = "easysftp-linux-installer.tar.gz"
+    with open(fileName, 'wb') as file:
         file.write(fileResponse.content)
     print('\nUpdate Downloaded Successfully!')
 
@@ -151,8 +153,8 @@ def checkUpdate():
                 print(newVersion[:3])
                 if sys.platform == 'win32': startfile('easysftp-{}.exe'.format(newVersion[:3]))
                 else: 
-                    run('tar xzf easysftp-linux-installer')
-                    run('sudo ./install.sh')
+                    console('tar xzf easysftp-linux-installer')
+                    console('sudo ./install.sh')
                 sys.exit()
             return 1
 
