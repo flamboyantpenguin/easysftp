@@ -1,5 +1,10 @@
 # Console UI for easysftp
 # Version: 2.0.0
+# Last Updated: 10-09-2023
+
+
+from queue import SimpleQueue
+
 
 # ASCII Color Codes
 red = '\033[31m'
@@ -12,6 +17,9 @@ reset = '\033[0m'
 
 # Loading Animation Characters
 lAIcons = ['|', '/', '-', '\\']
+
+# Progress Bar Queue
+queue = SimpleQueue()
 
 # DAWN Logo
 logo = '''
@@ -33,11 +41,12 @@ def setColor(color = reset):
 
 
 # Progress Bar
-def progressBar(thread, queue, actionName):
+def progressBar(thread, actionName):
+    global queue
     k = 0
     s = set()
     progress = 0
-    while progress != 100:
+    while thread.is_alive() and progress != 100:
         progress = queue.get()
         if progress not in s:
             print('\b'*40, end='', flush=True)

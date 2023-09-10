@@ -2,7 +2,7 @@
 # An easy to use console based client for Downloading files from a remote server using sftp
 # Program made with paramiko
 # Made by DAWN/ペンギン
-# Last Updated 09-09-2023
+# Last Updated 10-09-2023
 
 
 import bses03.ph03 as bses

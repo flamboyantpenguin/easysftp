@@ -2,7 +2,7 @@
 # An easy to use console based client for transferring files via sftp
 # Program made with paramiko
 # Made by DAWN/ペンギン
-# Last Updated: 09-09-2023
+# Last Updated: 10-09-2023
 
 
 import sys
@@ -16,7 +16,7 @@ from threading import Thread
 from os import mkdir, path, system
 from multiprocessing import SimpleQueue
 
-#os.starfile is not available for linux
+#os.startfile is not available for linux
 if sys.platform == 'win32': from os import startfile
 
 
@@ -56,33 +56,19 @@ def initialise():
     return 0
 
 
-def dProgress(queue, fname, lfile, action='D'):
-    info = connector.sftp.stat(fname)
-    fSize = round(int(info.st_size)/(1024*1024), 2) # type: ignore
-    while 1: 
-        if action == 'D':
-            lSize = round(path.getsize(lfile)/(1024*1024), 2)
-            progress = int((lSize/fSize)*100)
-        else: 
-            info = connector.sftp.stat(fname)
-            fSize = round(int(info.st_size)/(1024*1024), 2) # type: ignore
-            lSize = round(path.getsize(lfile)/(1024*1024), 2)
-            progress = int((fSize/lSize)*100)
-        queue.put(progress)
-        if progress == 100: break
+def tProgress(transferred, toBeTransferred):
+    cui.queue.put(int((transferred/toBeTransferred)*100))
 
 
 def get(file):
-    queue = SimpleQueue()
+    q = SimpleQueue()
     if file.isdigit(): file = ldir[int(file)-1]
     print('Starting Download...')
-    fileDownload = Thread(target=connector.sftp.get, args=(file, downloadDir+'/'+file))
-    progress = Thread(target=dProgress, args=(queue, file, downloadDir+'/'+file, 'D'))
+    fileDownload = Thread(target=connector.sftp.get, args=(file, downloadDir+'/'+file, tProgress))
     fileDownload.daemon = True
-    progress.daemon = True
     fileDownload.start()
-    progress.start()
-    cui.progressBar(fileDownload, queue, "Downloading")
+    cui.progressBar(fileDownload, "Downloading")
+    fileDownload.join()
     print('\nFile Downloaded successfully')
 
 
@@ -90,13 +76,11 @@ def put(file):
     queue = SimpleQueue()
     if file.isdigit(): file = ldir[int(file)-1]
     print('Starting Upload...')
-    fileUpload = Thread(target=connector.sftp.put, args=(file, file))
-    progress = Thread(target=dProgress, args=(queue, file, file, 'U'))
+    fileUpload = Thread(target=connector.sftp.put, args=(file, file, tProgress))
     fileUpload.daemon = True
-    progress.daemon = True
     fileUpload.start()
-    progress.start()
-    cui.progressBar(fileUpload, queue, "Uploading")
+    cui.progressBar(fileUpload, "Uploading")
+    fileUpload.join()
     print('\nFile Uploaded successfully')
 
 
