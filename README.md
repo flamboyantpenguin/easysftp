@@ -10,7 +10,9 @@ easysftp is a console based program made using [paramiko](https://github.com/par
 
 ### Windows
 
-easysftp is available as a portable executable for Windows. The Download directory and config files are stored locally. To get started, download the latest version of easysftp from here or use the check-update command in easysftp-1.8 to download the latest version.
+easysftp is available as a portable executable for Windows. To get started, download the latest version of easysftp from here or use the check-update command in easysftp-1.8 to download the latest version.
+
+For previous editions of Windows (7/8.1), you can download and run the legacy executable.
 
 ### Linux
 
@@ -26,15 +28,13 @@ After successfull installation, you will see an executable file named easysftp-2
 
 To learn more about the installer, refer installer manual.
 
-## Downloading Source
+## Running from Source
 
-To download the source, clone this repository using git or download the source from the [latest release](https://github.com/flamboyantpenguin/easysftp/releases/latest).
+To run easysftp from source, clone this repository using git or download the source from the [latest release](https://github.com/flamboyantpenguin/easysftp/releases/latest).
 
 `git clone https://github.com/flamboyantpenguin/easysftp`
 
 Note: To clone this repository on Windows, you need to have [git for windows](https://git-scm.com/) installed in your system.
-
-To download
 
 ## Basic Commands
 
@@ -69,7 +69,7 @@ Current Directory: /home/user/Backup
 easysftp>
 ```
 
-To download files, type the coressponding number of the required file
+To download files, type the coressponding number of the required file. Files will be stored in a local folder named Downloads.
 
 ```Console
 easysftp>3
@@ -108,7 +108,15 @@ Upon successfull login to a server, you will be asked whether to save login info
 
 ## Supported Platforms and Requirements
 
-To run the program you need Python 3.10 or above especially since bses algorith uses match case for level based encryption.
+To run the program from source you need to install Python 3.10 or above since bses encryption uses match case (introduced in Python 3.10)
+The program has been tested successfully in the following platforms
+
+- Windows 10
+- Linux
+  - amd64
+    - Ubuntu (22.04.1, 23.04)
+  - armv8
+    - Ubuntu
 
 ## About
 
