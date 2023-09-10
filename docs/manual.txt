@@ -1,4 +1,4 @@
-----------easysftp 1.8.0 Console Manual----------
+----------easysftp 2.0.0 Console Manual----------
 
 _____Navigation_____
 For navigating/downloading files, type the number of the corressponding file/directory
@@ -32,5 +32,5 @@ _____Commands_____
 > about
     Displays the about page
 
-Last Updated: 02-08-2023
+Last Updated: 10-09-2023
     

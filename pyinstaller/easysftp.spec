@@ -28,7 +28,7 @@ exe = EXE(
     a.zipfiles,
     a.datas,
     [],
-    name='easysftp-1.8',
+    name='easysftp-2.0',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,

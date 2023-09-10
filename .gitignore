@@ -1,7 +1,10 @@
 .vscode
 .venv
+config.bin
+Downloads
 easysftp/config.bin
 easysftp/Downloads
 easysftp/__pycache__
 pyinstaller/build
 pyinstaller/dist
+easysftp/bses03/__pycache__

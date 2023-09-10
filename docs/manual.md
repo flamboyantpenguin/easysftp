@@ -1,4 +1,4 @@
-# easysftp 1.8.0 Console Manual
+# easysftp 2.0.0 Console Manual
 
 Info on Navigation and Basic Commands
 
@@ -40,4 +40,4 @@ Displays version info
 
 Displays program info
 
-    Last Updated: 02-08-2023
+    Last Updated: 10-09-2023

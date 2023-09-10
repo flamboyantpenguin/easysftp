@@ -1,46 +1,48 @@
-#easysftp console 1.8.0
-#An easy to use console based client for Downloading files from a remote server using sftp
-#Program made with paramiko
-#Made by DAWN/ペンギン
+# easysftp console 2.0.0
+# An easy to use console based client for transferring files via sftp
+# Program made with paramiko
+# Made by DAWN/ペンギン
+# Last Updated: 10-09-2023
 
 
 import sys
-import themes
+import cui as cui
 import requests
 import connector
 from time import sleep
+from subprocess import run
 from getpass import getpass
 from threading import Thread
 from os import mkdir, path, system
+from multiprocessing import SimpleQueue
 
-
+#os.startfile is not available for linux
 if sys.platform == 'win32': from os import startfile
 
 
 ldir = []
-lAIcons = ['|', '/', '-', '\\'] #Loading Animation Characters
-version = '1.8.0'
+version = '2.0.0'
 
 
 def initialise():
-    #For fetching assets
+    # For fetching assets
     global assetPath, downloadDir
     if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
-        #Fetching from pyinstaller bundles
+        # Fetching from pyinstaller bundles
         assetPath = path.dirname(__file__)+'/docs'
     else:
-        #Fetching from local directory
-        #assetPath = getcwd()+'\\assets'
+        # Fetching from local directory
+        # assetPath = getcwd()+'\\assets'
         assetPath = '../docs'
-    #Creating Local Directories
+    # Creating Local Directories
     if path.exists('Downloads') == False: mkdir('Downloads')
     downloadDir = 'Downloads'
-    #Checking for config
+    # Checking for config
     print('Checking for config files', end='', flush = True)
     clear()
     if path.exists('config.bin') and input('Do you want to load data from config (Y/N)? ').upper() == 'Y':
         data = connector.loadConfig()
-    else: 
+    else:
         print()
         host = input('Enter hostname: ')
         user = input('Enter username: ')
@@ -54,33 +56,31 @@ def initialise():
     return 0
 
 
+def tProgress(transferred, toBeTransferred):
+    cui.queue.put(int((transferred/toBeTransferred)*100))
+
+
 def get(file):
-    k = 0
+    q = SimpleQueue()
     if file.isdigit(): file = ldir[int(file)-1]
     print('Starting Download...')
-    fileDownload = Thread(target=connector.sftp.get, args=(file, downloadDir+'/'+file))
+    fileDownload = Thread(target=connector.sftp.get, args=(file, downloadDir+'/'+file, tProgress))
     fileDownload.daemon = True
     fileDownload.start()
-    while fileDownload.is_alive():
-        print('Downloading {} [{}]'.format(file, lAIcons[k]), flush=True, end='')
-        k = k+1 if k < len(lAIcons)-1 else 0
-        clear()
-    clear()
+    cui.progressBar(fileDownload, "Downloading")
+    fileDownload.join()
     print('\nFile Downloaded successfully')
 
 
 def put(file):
-    k = 0
+    queue = SimpleQueue()
     if file.isdigit(): file = ldir[int(file)-1]
     print('Starting Upload...')
-    fileDownload = Thread(target=connector.sftp.put, args=(file, file))
-    fileDownload.daemon = True
-    fileDownload.start()
-    while fileDownload.is_alive():
-        print('Uploading {} [{}]'.format(file, lAIcons[k]), flush=True, end='')
-        k = k+1 if k < len(lAIcons)-1 else 0
-        clear()
-    clear()
+    fileUpload = Thread(target=connector.sftp.put, args=(file, file, tProgress))
+    fileUpload.daemon = True
+    fileUpload.start()
+    cui.progressBar(fileUpload, "Uploading")
+    fileUpload.join()
     print('\nFile Uploaded successfully')
 
 
@@ -104,10 +104,10 @@ def clearConsole():
 
 
 def displayAbout():
-    themes.setColor(themes.green)
+    cui.setColor(cui.green)
     with open(assetPath+'/about.txt', 'r') as about:
         print(about.read())
-    themes.setColor(themes.reset)
+    cui.setColor(cui.reset)
 
 
 def displayManual():
@@ -116,56 +116,61 @@ def displayManual():
 
 
 def downloadUpdate(newVersion):
-    if sys.platform != 'linux': 
+    if sys.platform != 'linux':
         url = 'https://github.com/flamboyantpenguin/easysftp/releases/latest/download/easysftp-{}.exe'.format(newVersion[:3])
         fileResponse = requests.get(url = url, allow_redirects=True)
-    else: 
-        url = 'https://github.com/flamboyantpenguin/easysftp/releases/latest/download/easysftp-linux-amd64.tar.gz'
+        fileName = "easysftp-{}.exe".format(newVersion[:3])
+    else:
+        url = 'https://github.com/flamboyantpenguin/easysftp/releases/latest/download/easysftp-linux-installer.tar.gz'
         fileResponse = requests.get(url = url, allow_redirects=True)
-    with open('easysftp-{}.exe'.format(newVersion[:3]), 'wb') as file:
+        fileName = "easysftp-linux-installer.tar.gz"
+    with open(fileName, 'wb') as file:
         file.write(fileResponse.content)
     print('\nUpdate Downloaded Successfully!')
 
 
 def checkUpdate():
-    try: 
+    try:
         response = requests.get('https://api.github.com/repos/flamboyantpenguin/easysftp/releases/latest')
         newVersion = response.json()['name'].split()[1]
-        if newVersion == version:
+        if newVersion >= version:
             return 0
         else:
-            print(themes.cyan, 'easysftp {} is available'.format(newVersion), sep='')
+            print(cui.cyan, 'easysftp {} is available'.format(newVersion), sep='')
             if input('Do you want to download the latest version? (Y/N) ').upper()[0] == 'Y':
                 k = 0
                 updateDownload = Thread(target=downloadUpdate, args=(newVersion, ))
                 updateDownload.daemon = True
                 updateDownload.start()
                 while updateDownload.is_alive():
-                    print('Downloading easysftp-{} [{}]'.format(newVersion, lAIcons[k]), flush=True, end='')
-                    k = k+1 if k < len(lAIcons)-1 else 0
+                    print('Downloading easysftp-{} [{}]'.format(newVersion, cui.lAIcons[k]), flush=True, end='')
+                    k = k+1 if k < len(cui.lAIcons)-1 else 0
                     clear()
-                print(newVersion[:3])
                 if sys.platform == 'win32': startfile('easysftp-{}.exe'.format(newVersion[:3]))
+                else: 
+                    system('tar xzf easysftp-linux-installer.tar.gz')
+                    system('sudo ./install.sh')
                 sys.exit()
             return 1
+
     except Exception as e:
         print(e)
-        print(themes.red, 'Error Checking for Updates\n', themes.reset, sep = '')
+        print(cui.red, 'Error Checking for Updates\n', cui.reset, sep = '')
 
 
-#Startup
+# Startup
 if sys.platform != 'linux': system('echo on')
 checkUpdate()
-print(themes.cyan, 'easyftp 1.8.0', sep='')
-print('An easy to use program for downloading files from a remote server via sftp', themes.reset, sep='')
+print(cui.cyan, 'easyftp 2.0.0', sep='')
+print('An easy to use program for downloading files from a remote server via sftp', cui.reset, sep='')
 initialise()
 
 
-#Interaction Phase
+# Interaction Phase
 ls()
 while 1:
     ch = input('easysftp>')
-    try: 
+    try:
         if ch.isdigit():
             ch = int(ch)
             if connector.isDir(ldir[ch-1]): connector.sftp.chdir(ldir[ch-1]); ls(); continue
@@ -173,24 +178,24 @@ while 1:
         elif ch == '.' or ch == '..':
             connector.sftp.chdir(ch)
             ls()
-        else: 
+        else:
             if ch == 'help': displayManual()
             elif ch == 'exit': sys.exit(0)
             elif 'cd' in ch: connector.sftp.chdir(ch.split()[1]); ls()
             elif 'get' in ch: get(ch.split()[1]); ls()
             elif 'put' in ch: put(ch.split()[1]); ls()
-            elif 'ls' in ch: ls()
+            elif 'ls' in ch: ls() 
             elif ch == 'cls' or ch == 'clear': clearConsole()
-            elif ch == 'version': print('\neasysftp 1.8.0 Pre-Alpha\n')
-            elif ch == 'checkupdate': 
-                if not checkUpdate():
+            elif ch == 'version': print('\neasysftp 2.0.0 Pre-Alpha\n')
+            elif ch == 'checkupdate':
+                if checkUpdate() is False:
                     print('The software is up to date. For downloading other versions, go to https://github.com/flamboyantpenguin/easysftp/releases')
             elif ch == 'about': system('cls'); displayAbout()
             elif ch in ['', ' ']: continue
             else: print('\aInvalid Command')
     except Exception as error:
-        themes.setColor(themes.red)
+        cui.setColor(cui.red)
         print('\aUnexpected Error')
         print(error)
-        themes.setColor(themes.reset)
+        cui.setColor(cui.reset)
         print('\nReport Errors at https://github.com/flamboyantpenguin/easysftp')
