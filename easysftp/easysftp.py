@@ -6,7 +6,7 @@
 
 
 import sys
-import cui as cui
+import cui
 import requests
 import connector
 from time import sleep
@@ -14,7 +14,6 @@ from subprocess import run
 from getpass import getpass
 from threading import Thread
 from os import mkdir, path, system
-from multiprocessing import SimpleQueue
 
 #os.startfile is not available for linux
 if sys.platform == 'win32': from os import startfile
@@ -61,7 +60,6 @@ def tProgress(transferred, toBeTransferred):
 
 
 def get(file):
-    q = SimpleQueue()
     if file.isdigit(): file = ldir[int(file)-1]
     print('Starting Download...')
     fileDownload = Thread(target=connector.sftp.get, args=(file, downloadDir+'/'+file, tProgress))
@@ -73,7 +71,6 @@ def get(file):
 
 
 def put(file):
-    queue = SimpleQueue()
     if file.isdigit(): file = ldir[int(file)-1]
     print('Starting Upload...')
     fileUpload = Thread(target=connector.sftp.put, args=(file, file, tProgress))

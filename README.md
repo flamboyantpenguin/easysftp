@@ -16,17 +16,18 @@ For previous editions of Windows (7/8.1), you can download and run the legacy ex
 
 ### Linux
 
+easysftp can be compiled as an executable using pyinstaller. However, there will be combatability issues due to difference in package versions. To avoid this we introduced a script which will clone this repository and compile automatically.
 To start using easysftp in Linux, you need to download the easysftp-linux-installer. The installer automatically downloads the latest source code and required libraries and compiles the program using pyinstaller.
 
 After downloading the installer, extract the contents and run the install.sh script as admin
 
 `sudo ./install.sh`
 
-After successfull installation, you will see an executable file named easysftp-2.0.
+After successfull installation, you will see an executable file named easysftp-_version_.
 
 `./easysftp-2.0`
 
-To learn more about the installer, refer installer manual.
+To learn more about the installer, refer installer manual included with the installer.
 
 ## Running from Source
 
