@@ -36,7 +36,6 @@ To run easysftp from source, clone this repository using git or download the sou
 
 Note: To clone this repository on Windows, you need to have [git for windows](https://git-scm.com/) installed in your system.
 
-
 ## Basic Commands
 
 After connecting to the server, you will see a list of directories in the remote server and a console output in the window.
