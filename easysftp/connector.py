@@ -71,7 +71,7 @@ def loadConfig():
     
 
 def saveConfig(data):
-    with open('config.bin', 'wb') as config:
+    with open('easysftp/config.bin', 'wb') as config:
         data = dumps(data)
         data = decode(data)
         data = bses.switch(data, 'Tilda4744#@', 0)

@@ -1,4 +1,4 @@
-# easysftp console 2.0.0
+# easysftp console 2.1.0
 # An easy to use console based client for transferring files via sftp
 # Program made with paramiko
 # Made by DAWN/ペンギン
@@ -20,7 +20,7 @@ if sys.platform == 'win32': from os import startfile
 
 
 ldir = []
-version = '2.0.0'
+version = '2.1.0'
 
 
 def initialise():
@@ -34,12 +34,12 @@ def initialise():
         # assetPath = getcwd()+'\\assets'
         assetPath = '../docs'
     # Creating Local Directories
-    if path.exists('Downloads') == False: mkdir('Downloads')
-    downloadDir = 'Downloads'
+    if path.exists('easysftp') == False: mkdir('easysftp')
+    downloadDir = 'easysftp'
     # Checking for config
     print('Checking for config files', end='', flush = True)
     clear()
-    if path.exists('config.bin') and input('Do you want to load data from config (Y/N)? ').upper() == 'Y':
+    if path.exists('easysftp/config.bin') and input('Do you want to load data from config (Y/N)? ').upper() == 'Y':
         data = connector.loadConfig()
     else:
         print()
