@@ -1,8 +1,8 @@
-# easysftp console 2.1.0
+# easysftp console 2.2.0
 # An easy to use console based client for transferring files via sftp
 # Program made with paramiko
 # Made by DAWN/ペンギン
-# Last Updated: 10-09-2023
+# Last Updated: 28-12-2023
 
 
 import sys
@@ -10,7 +10,6 @@ import cui
 import requests
 import connector
 from time import sleep
-from subprocess import run
 from getpass import getpass
 from threading import Thread
 from os import mkdir, path, system
@@ -20,7 +19,7 @@ if sys.platform == 'win32': from os import startfile
 
 
 ldir = []
-version = '2.1.0'
+version = '2.2.0'
 
 
 def initialise():
@@ -158,7 +157,7 @@ def checkUpdate():
 # Startup
 if sys.platform != 'linux': system('echo on')
 checkUpdate()
-print(cui.cyan, 'easyftp 2.0.0', sep='')
+print(cui.cyan, 'easyftp 2.2.0', sep='')
 print('An easy to use program for downloading files from a remote server via sftp', cui.reset, sep='')
 initialise()
 

@@ -1,9 +1,11 @@
 # Console UI for easysftp
-# Version: 2.0.0
-# Last Updated: 10-09-2023
+# Version: 2.2.0
+# Last Updated: 28-12-2023
 
 
+from time import time
 from queue import SimpleQueue
+from os import get_terminal_size
 
 
 # ASCII Color Codes
@@ -43,19 +45,19 @@ def setColor(color = reset):
 # Progress Bar
 def progressBar(thread, actionName):
     global queue
-    k = 0
-    s = set()
-    progress = 0
+    k, progress = 0, 0
+    t = time()
+    c, l = get_terminal_size()
+    c -= (len(actionName) + 12)
     while thread.is_alive() and progress != 100:
         progress = queue.get()
-        if progress not in s:
-            print('\b'*40, end='', flush=True)
-            if progress <= 33: setColor(red)
-            elif progress <= 66: setColor(orange)
-            elif progress == 100: setColor(green)
-            else: setColor(cyan)
-            print('{} ['.format(actionName), '-'*(progress//10), ' '*(10-(progress//10)), '] ', progress, '%', ' [{}]'.format(lAIcons[k]), end= '', sep = '', flush=True)
-            s.add(progress)
-            k = k+1 if k < len(lAIcons)-1 else 0
+        print('\b'*c*2, end='', flush=True)
+        if progress <= 33: setColor(red)
+        elif progress <= 66: setColor(orange)
+        elif progress == 100: setColor(green)
+        else: setColor(cyan)
+        print('{} ['.format(actionName), '-'*(c*progress//100), ' '*(c-(c*progress//100)), '] ', progress, '%', ' [{}]'.format(lAIcons[k]), end= '', sep = '', flush=True)
+        if time() - t > 0.1: k = k+1 if k < len(lAIcons)-1 else 0
+        t = time() if (time() - t > 0.1) else t
     setColor()
     return 0

@@ -1,8 +1,8 @@
-# easysftp 2.0.0
+# easysftp 2.2.0
 # An easy to use console based client for Downloading files from a remote server using sftp
 # Program made with paramiko
 # Made by DAWN/ペンギン
-# Last Updated 10-09-2023
+# Last Updated 28-12-2023
 
 
 import bses03.ph03 as bses
@@ -62,7 +62,7 @@ def decode(data):
 
 
 def loadConfig():
-    with open('config.bin', 'rb') as config:
+    with open('easysftp/config.bin', 'rb') as config:
         data = config.read()
         data = decode(data)
     data = bses.switch(data, 'Tilda4744#@', 0)
