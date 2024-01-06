@@ -82,7 +82,7 @@ def initialise():
 
 def logger(message, code):
     currentTime = strftime('%Y-%m-%d/%H%M%S')
-    with open('easysftp/logs.txt', 'a') as logFile:
+    with open('easysftp/logs.txt', 'a+') as logFile:
         log = '{cTime}\t:\t{action} | {actionCode}\n'.format(cTime = currentTime, action = message, actionCode = code)
         logFile.write(log)
         logFile.flush()
