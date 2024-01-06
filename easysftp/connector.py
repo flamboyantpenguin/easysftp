@@ -1,23 +1,48 @@
-# easysftp 2.0.0
+# easysftp 2.5.0
 # An easy to use console based client for Downloading files from a remote server using sftp
 # Program made with paramiko
 # Made by DAWN/ペンギン
-# Last Updated 10-09-2023
+# Last Updated 06-01-2024
 
 
+import paramiko
+from os import system
 import bses03.ph03 as bses
+from base64 import decodebytes
 from pickle import loads, dumps
-from paramiko import SSHClient, AutoAddPolicy
 
 
-def connect(host, user, key, cPath = ''):
+hosts = []
+previousLogin = {}
+connection = paramiko.SSHClient()
+
+errorCode = {1:'Err:1.1 Config File Corrupted!', 2.1:'Err:2.1 Authentication Error! Check your credentials', 2.2:'Err:2.2 Invalid Authentication Type! You might require a keyfile', 2.3:'Err:2.3 Invalid Host Key!', 2.4: 'Err:2.4 Unknown Host! Add host to known hosts in the program or system', 3: 'Err3: Specified File Does Not Exist', 4: 'Err4: An unknown error has occured. Check logs or error.txt'}
+
+
+def exportErrorInfo(data):
+    with open('error', 'w') as file:
+        file.write(data)
+    return 0
+
+
+def connect(host, user, key, cPath = '', keyfile = None):
     global sftp
-    connection = SSHClient()
-    connection.set_missing_host_key_policy(AutoAddPolicy())
+    global connection
+    loadHosts()
+
     try: 
-        connection.connect(hostname=host, username=user, password=key)
-    except:
-        return 1
+        connection.connect(hostname=host, username=user, password=key, key_filename = keyfile)
+    except Exception as e:
+        exportErrorInfo(str(e))
+        match (e):
+            case paramiko.AuthenticationException:
+                return 2.1
+            case paramiko.BadAuthenticationType:
+                return 2.2
+            case paramiko.BadHostKeyException:
+                return 2.3
+            case _:
+                return 4
     sftp = connection.open_sftp()
     sftp.listdir()
     if cPath != '': sftp.chdir(cPath)
@@ -62,18 +87,69 @@ def decode(data):
 
 
 def loadConfig():
-    with open('config.bin', 'rb') as config:
+    global hosts
+    global previousLogin
+    with open('easysftp/config.bin', 'rb') as config:
         data = config.read()
         data = decode(data)
     data = bses.switch(data, 'Tilda4744#@', 0)
     data = loads(encode(data))
-    return data
+    previousLogin = data[0]
+    hosts = data[1]
+    return 0
     
 
-def saveConfig(data):
-    with open('config.bin', 'wb') as config:
-        data = dumps(data)
+def saveConfig():
+    with open('easysftp/config.bin', 'wb') as config:
+        data = dumps({0: previousLogin, 1: hosts})
         data = decode(data)
         data = bses.switch(data, 'Tilda4744#@', 0)
         config.write(encode(data))
+    return 0
+
+
+def loadHosts():
+    global hosts
+    global connection
+    connection.load_system_host_keys()
+    t = connection.get_host_keys()
+    for host in hosts:
+        if host[1] == 'ssh-rsa':
+            key = paramiko.RSAKey(data=decodebytes(host[2]))
+        else:
+            key = paramiko.Ed25519Key(data=decodebytes(host[2]))
+        t.add(hostname = host[0], keytype= host[1], key = key)
+    t.update()
+    return 0
+
+
+def getKey(host):
+    keys = list()
+    system('@echo off')
+    system(r'ssh-keyscan {} > easysftp\key.pub'.format(host))
+    with open('easysftp/key.pub', 'r') as keyfile:
+        data = keyfile.read().split()
+    for i in data:
+        if i == 'ssh-rsa' or i == 'ssh-ed25519':
+            keys.append([i, data[data.index(i)+1].encode()])
+    system(r'del easysftp\key.pub')
+    system('@echo on')
+    return keys
+
+
+def addHostKey(host):
+    global hosts
+    global connection
+    keys = getKey(host)
+    for key in keys:
+        hosts.append([host, key[0], key[1]])
+    saveConfig()
+    return 0
+
+
+def checkHost(host):
+    global connection
+    loadHosts()
+    if (connection.get_host_keys().lookup(host)):
+        return 1
     return 0

@@ -8,3 +8,4 @@ easysftp/__pycache__
 pyinstaller/build
 pyinstaller/dist
 easysftp/bses03/__pycache__
+easysftp/logs.txt
