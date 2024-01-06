@@ -131,7 +131,7 @@ def checkUpdate():
         response = requests.get('https://api.github.com/repos/flamboyantpenguin/easysftp/releases/latest')
         newVersion = response.json()['name'].split()[1]
         newVersion = newVersion.rstrip('.0')
-        if newVersion >= version:
+        if newVersion <= version:
             return 0
         else:
             print(cui.cyan, 'easysftp {} is available'.format(newVersion), sep='')
