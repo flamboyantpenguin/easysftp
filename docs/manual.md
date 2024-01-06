@@ -1,4 +1,4 @@
-# easysftp 2.2.0 Console Manual
+# easysftp 2.5.0 Console Manual
 
 Info on Navigation and Basic Commands
 
@@ -22,7 +22,11 @@ Uploads a file to the server
 
 ### `ls`
 
-Displays the files in the current directory
+Displays the files in the remote directory
+
+### `lls`
+
+Displays the files in the local directory
 
 ### `clear`
 
@@ -40,4 +44,4 @@ Displays version info
 
 Displays program info
 
-    Last Updated: 28-12-2023
+    Last Updated: 06-01-2024
