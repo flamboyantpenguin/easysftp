@@ -45,8 +45,7 @@ def initialise():
     if not path.exists('easysftp/config.bin'):
         connector.saveConfig()
     connector.loadConfig()
-    msg = 'Do you want to load data from previous login [{}@{}] (Y/N)? '.format(connector.previousLogin['user'], connector.previousLogin['host'])
-    if connector.previousLogin != {} and input(msg)[0].upper() == 'Y':
+    if connector.previousLogin != {} and input('Do you want to load data from previous login [{}@{}] (Y/N)? '.format(connector.previousLogin['user'], connector.previousLogin['host']))[0].upper() == 'Y':
         data = connector.previousLogin
     else:
         print()
@@ -189,7 +188,7 @@ def checkUpdate():
     try:
         response = requests.get('https://api.github.com/repos/flamboyantpenguin/easysftp/releases/latest')
         newVersion = response.json()['name'].split()[1]
-        if newVersion >= version:
+        if (str(newVersion) <= version):
             return 0
         else:
             logger('New Update Found', 0)
@@ -218,7 +217,7 @@ def checkUpdate():
 # Startup
 if sys.platform != 'linux': system('echo on')
 checkUpdate()
-print(cui.cyan, '\neasyftp 2.5.0', sep='')
+print(cui.cyan, 'easyftp 2.5.0', sep='')
 print('https://github.com/flamboyantpenguin/easysftp')
 print('An easy to use program for downloading files from a remote server via sftp', cui.reset, sep='')
 errorCode = initialise()
