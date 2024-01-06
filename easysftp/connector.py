@@ -29,7 +29,6 @@ def connect(host, user, key, cPath = '', keyfile = None):
     global sftp
     global connection
     loadHosts()
-    connection.load_system_host_keys() 
 
     try: 
         connection.connect(hostname=host, username=user, password=key, key_filename = keyfile)
@@ -112,6 +111,7 @@ def saveConfig():
 def loadHosts():
     global hosts
     global connection
+    connection.load_system_host_keys()
     t = connection.get_host_keys()
     for host in hosts:
         if host[1] == 'ssh-rsa':
@@ -150,6 +150,6 @@ def addHostKey(host):
 def checkHost(host):
     global connection
     loadHosts()
-    if not (connection.get_host_keys().lookup(host)):
-        return 0
-    return 1
+    if (connection.get_host_keys().lookup(host)):
+        return 1
+    return 0

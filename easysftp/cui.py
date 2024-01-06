@@ -75,7 +75,7 @@ def progressBar(thread, actionName):
     sT = time()
     k, ft = 0, 0
     spd = ['0', 'MB']
-    progress = [1, 2]
+    progress = [0, 2]
     c, l = get_terminal_size()
     c -= (len(actionName) + 42)
     ic = '▼' if actionName[0] == 'D' else '▲'

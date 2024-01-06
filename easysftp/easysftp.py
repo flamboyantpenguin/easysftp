@@ -56,12 +56,10 @@ def initialise():
         connector.previousLogin = data
         connector.saveConfig()
 
-    if not connector.checkHost(data['host']):
+    if connector.checkHost(data['host']):
         if input("Do you want to add this host to known_hosts? (Y/N)? ")[0].upper() == 'Y':
             connector.addHostKey(data['host'])
         else:
-            logger(connector.errorCode[2.4], 2.4)
-            print(cui.red, "{}".format(connector.errorCode[2.4]), cui.reset, sep = '')
             return 2.4
     
     keyfile = None
@@ -81,6 +79,7 @@ def initialise():
 
 
 def logger(message, code):
+    if path.exists('easysftp') == False: mkdir('easysftp')
     currentTime = strftime('%Y-%m-%d/%H%M%S')
     with open('easysftp/logs.txt', 'a+') as logFile:
         log = '{cTime}\t:\t{action} | {actionCode}\n'.format(cTime = currentTime, action = message, actionCode = code)
