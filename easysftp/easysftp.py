@@ -19,7 +19,7 @@ if sys.platform == 'win32': from os import startfile
 
 
 ldir = []
-version = '2.5'
+version = '2.5.0'
 
 
 def initialise():
@@ -56,7 +56,7 @@ def initialise():
         connector.previousLogin = data
         connector.saveConfig()
 
-    if connector.checkHost(data['host']):
+    if not connector.checkHost(data['host']):
         if input("Do you want to add this host to known_hosts? (Y/N)? ")[0].upper() == 'Y':
             connector.addHostKey(data['host'])
         else:
@@ -139,8 +139,8 @@ def ls():
 
 def lls():
     print('\n')
-    ldir = listdir(downloadDir)
-    for i in ldir: print('[{}]\t\t{}'.format(ldir.index(i)+1, i))
+    ld = listdir(downloadDir)
+    for i in ld: print('[{}]\t\t{}'.format(ld.index(i)+1, i))
     print()
 
     
