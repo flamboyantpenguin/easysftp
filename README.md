@@ -27,7 +27,7 @@ After downloading the installer, extract the contents and run the install.sh scr
 
 After successfull installation, you will see an executable file named easysftp-_version_.
 
-`./easysftp-2.5`
+`./easysftp-2.6`
 
 To learn more about the installer, refer installer manual included with the installer.
 
@@ -37,7 +37,8 @@ To run easysftp from source, clone this repository using git or download the sou
 
 `git clone https://github.com/flamboyantpenguin/easysftp`
 
-Note: To clone this repository on Windows, you need to have [git for windows](https://git-scm.com/) installed in your system.
+> [!NOTE]
+> To clone this repository on Windows, you need to have [git for windows](https://git-scm.com/) installed in your system.
 
 ## Basic Commands
 
@@ -122,17 +123,18 @@ Current Directory: /home/penguin/Data/Backup
 easysftp>
 ```
 
-    Note: While using put command make sure to type the full file name. 
+> [!IMPORTANT]
+> While using put command make sure to type the full file name. 
 
 For more info refer [manuals](./docs/manual.md)
 
 ## Authentication
 
-easysftp now supports key based authentication. Previously, easysftp ignored unknown hosts. This is not a recommended practise and is a security vulnerability. Therefore, we have modified our authentication system. If the ssh-fingerprint of your remote server is present in your system (stored in `.ssh/known_hosts` in your home directory) the keys will be automatically loaded from it. In case of a unrecognised host, you have the option to add the fingerprint key to the local easysftp storage (`config.bin`) without disturbing your system `known_hosts` file. This fingerprint will be used for furthur authentication. For public key based authentication, you can copy your `key.pub` file to the `easysftp` directory or it will be automatically loaded from the system (`.ssh`). Upon successfull login to a server, login info will be saved automatically. Passwords are no longer stored locally and you need to manually enter the password upon each login. 
+easysftp now supports key based authentication. Previously, easysftp ignored unknown hosts. This is not a recommended practise and is a security vulnerability. Therefore, we have modified our authentication system. If the ssh-fingerprint of your remote server is present in your system (stored in `.ssh/known_hosts` in your home directory) the keys will be automatically loaded from it. In case of a unrecognised host, you have the option to add the fingerprint key to the local easysftp storage (`.cfg`) without disturbing your system `known_hosts` file. This fingerprint will be used for furthur authentication. For public key based authentication, you can copy your `key` file to the `easysftp` directory or it will be automatically loaded from the system (`.ssh`). Upon successfull login to a server, login info will be saved automatically. Passwords are no longer stored locally and you need to manually enter the password upon each login. 
 
 ## Errors and Debugging
 
-In case of any error, you can check the `logs.txt` and `error.txt` file in the `easysftp` directory. `error.txt` is an error report of the last reported error. The logging system is still in development but will be useful in some cases. 
+In case of any error, you can check the `.log` and `errorInfo.txt` file in the `easysftp` directory. `errorInfo.txt` is an error report of the last reported error. The logging system is still in development but will be useful in some cases. 
 
 ## Supported Platforms and Requirements
 
@@ -149,9 +151,9 @@ The program has been tested successfully in the following platforms
 ## About
 
 ```Txt
-easysftp 2.5.0
+easysftp 2.6.0
 
-Last Updated: 06-01-2024
+Last Updated: 14-01-2024
 Made by DAWN/ペンギン
 ```
 
