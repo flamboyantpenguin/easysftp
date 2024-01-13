@@ -1,4 +1,4 @@
-# easysftp 2.5.0 Console Manual
+# easysftp 2.6.0 Console Manual
 
 Info on Navigation and Basic Commands
 
@@ -28,6 +28,30 @@ Displays the files in the remote directory
 
 Displays the files in the local directory
 
+### `clearlogs`
+
+Clear logs
+
+### `viewlogs`
+
+Display logs
+
+## `showhidden`
+
+Show hidden files
+
+## `hidehidden`
+
+Hide hidden files
+
+## `clearhosts`
+
+Clear hosts keys from local database (Does not affect system known_hosts)
+
+### `set <param> <value>`
+
+Change Settings. Type `set help` for more info
+
 ### `clear`
 
 Clears the output screen
@@ -44,4 +68,4 @@ Displays version info
 
 Displays program info
 
-    Last Updated: 06-01-2024
+    Last Updated: 14-01-2024

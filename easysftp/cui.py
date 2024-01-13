@@ -1,12 +1,11 @@
 # Console UI for easysftp
-# Version: 2.5.0
-# Last Updated: 06-01-2024
+# Version: 2.6.0
+# Last Updated: 14-01-2024
 
 
-from time import ctime, time
 from queue import SimpleQueue
+from time import time, strftime
 from os import get_terminal_size
-
 
 # ASCII Color Codes
 red = '\033[31m'
@@ -16,6 +15,14 @@ blue = '\033[34m'
 cyan = '\033[36m'
 orange = '\033[33m'
 reset = '\033[0m'
+
+# Events
+events = {
+    '0101': ["\nHappy New Year {}!\n", red], 
+    '0506': ["\nHey! It's World Environment Day! Don't forget to plant a tree!\n", green],
+    '0808': ["\nMeow\n", orange],
+    '2512': ["\nMerry Christmas!\n", cyan], 
+    }
 
 # Loading Animation Characters
 lAIcons = ['|', '/', '-', '\\']
@@ -36,6 +43,9 @@ logo = '''
 >>>>>>>>>>  >>>>                  >>              >>          >>        >>>>
 '''
 
+# Progress Bar Size
+prgSize = 79
+
 
 # Simple function to change console color
 def setColor(color = reset):
@@ -47,61 +57,75 @@ def unitCalc(bytes):
     if bytes >= 1024:
         bytes /= 1024
         if bytes >= 1024:
-            return (str(round(bytes/1024, 2)), 'GB')
+            return (bytes/1024, 'GB')
         else:
-            return (str(round(bytes, 2)), 'MB')
-    return (str(round(bytes, 2)), 'KB')
+            return (bytes, 'MB')
+    return (bytes, 'KB')
 
 
 def eventCheck():
-    t = ctime()
-    t = t.split()
-    if t[1] == 'Jan' and t[2] == '01':
-        print('\n', t)
-        print(red, '\nHappy New Year {}!\n'.format(t[4]), reset, sep='')
-    if t[1] == 'Dec' and t[2] == '25':
-        print('\n', t)
-        print(cyan, '\nMerry Christmas!\n', reset, sep='')
-    if t[1] == 'Jun' and t[2] == '5':
-        print('\n', t)
-        print(green, "\nHey! It's World Environment Day! Don't forget to plant a tree!\n", reset, sep='')
+    date = strftime("%d%m")
+    for i in events:
+        if date == i:
+            print("\n", strftime("%c"))
+            print(events[i][1], events[i][0].format(strftime("%Y")), reset, sep = '')
     print('\n')
+    return 0
 
 
 # Progress Bar
-def progressBar(thread, actionName):
+def progressBar(thread, fname, action):
     global queue
-    t = time()
+    pT = time()
     sT = time()
     k, ft = 0, 0
-    spd = ['0', 'MB']
-    progress = [0, 2]
-    c, l = get_terminal_size()
-    c -= (len(actionName) + 42)
-    ic = '▼' if actionName[0] == 'D' else '▲'
+    fname  = ' '*20+fname+' '*20
+    s, e = 0, 20
+    spd = [0, 'MB'] # Starting Speed set at 0 MB/s
+    progress = [0, 2] # Starting Progress set at 0/2 (To avoid errors in case of queue delay)
+    c = (get_terminal_size()[0] - prgSize)
+    ic = '▼' if action == 'D' else '▲'
+
     while thread.is_alive() or (progress[0]/progress[1] != 1):
         prg = int((progress[0]/progress[1])*100)
+
         try:
             progress = list(queue.get_nowait())
         except:
             progress = progress
-        print('\b'*c*2, end='', flush=True)
+        
+        print('\b'*(c+prgSize)*2, end='', flush=True)
         if prg <= 33: setColor(red)
         elif prg <= 66: setColor(orange)
         elif prg == 100: setColor(green)
         else: setColor(cyan)
-        percent = str(prg)+'% '
-        i, f= unitCalc(progress[0]), unitCalc(progress[1])
-        if (time() - sT) >= 1:
+
+        
+        i, f = unitCalc(progress[0]), unitCalc(progress[1])
+
+        #Time Counters
+        if (time() - sT) >= 1: #Speed Calculation
             spd = unitCalc((progress[0] - ft)/(time() - sT))
             sT = time()
             ft = progress[0]
-        bar = '[' + '/'*((c*prg//100)-1) + '{}'.format(lAIcons[k]) +' '*(c-(c*prg//100)) + '] '
-        bytesDownloaded = i[0] + ' {}'.format(i[1]) + ' / ' + f[0] + ' {} '.format(f[1])
-        speed = spd[0] + ' ' + spd[1] + '/s '
-        output = '{} '.format(actionName) + bar + bytesDownloaded + percent + speed + '\t' + ic
+            
+
+        if time() - pT > 0.1: #Progress Bar UI
+            k = k+1 if k < len(lAIcons)-1 else 0
+            pT = time()
+            t = len(fname)
+            s = s+1 if e < t else 0
+            e = e+1 if e < t else 20
+
+        if prg == 100: s,e = 20, 40
+
+        percent = str(prg)+'%'
+        bar = '/'*((c*prg//100)-1) + '{}'.format(lAIcons[k]) +' '*(c-(c*prg//100))
+        bytesDownloaded = '{:.2f}'.format(i[0]) + ' {}'.format(i[1]) + ' / ' + '{:.2f}'.format(f[0]) + ' {}'.format(f[1])
+        speed = '{:.2f}'.format(spd[0]) + ' ' + spd[1] + '/s'
+        #output = '{:^20}\t'.format(fname[s:e]) + bar + bytesDownloaded + percent + speed + '\t' + ic
+        output = '{:20}   [{:<}]  {:23}    {:^12}    [{:^4}] {:>}'.format(fname[s:e], bar, bytesDownloaded, speed, percent, ic)
         print(output,  end= '', flush=True)
-        if time() - t > 0.1: k = k+1 if k < len(lAIcons)-1 else 0
-        t = time() if (time() - t > 0.1) else t
+        
     setColor()
     return 0

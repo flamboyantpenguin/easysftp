@@ -1,13 +1,15 @@
-# easysftp 2.5.0
+# easysftp 2.6.0
 # An easy to use console based client for Downloading files from a remote server using sftp
 # Program made with paramiko
 # Made by DAWN/ペンギン
-# Last Updated 06-01-2024
+# Last Updated 14-01-2024
 
 
 import paramiko
-from os import system
 import bses03.ph03 as bses
+from os import system
+from sys import platform
+from os.path import exists
 from base64 import decodebytes
 from pickle import loads, dumps
 
@@ -15,14 +17,27 @@ from pickle import loads, dumps
 hosts = []
 previousLogin = {}
 connection = paramiko.SSHClient()
+wDir = 'easysftp'
 
-errorCode = {1:'Err:1.1 Config File Corrupted!', 2.1:'Err:2.1 Authentication Error! Check your credentials', 2.2:'Err:2.2 Invalid Authentication Type! You might require a keyfile', 2.3:'Err:2.3 Invalid Host Key!', 2.4: 'Err:2.4 Unknown Host! Add host to known hosts in the program or system', 3: 'Err3: Specified File Does Not Exist', 4: 'Err4: An unknown error has occured. Check logs or error.txt'}
+# Settings
+settings = {
+    'logFileName': 0, 
+    'clearLogonStartup': 0, 
+    'saveFingerprints': 1,
+    'showHiddenFiles': 0,
+    }
 
 
-def exportErrorInfo(data):
-    with open('error', 'w') as file:
-        file.write(data)
-    return 0
+# Error Codes
+errorCode = {
+    1:'Err:1.1 Config File Corrupted!', 
+    2.1:'Err:2.1 Authentication Error! Check your credentials', 
+    2.2:'Err:2.2 Invalid Authentication Type! You might require a keyfile', 
+    2.3:'Err:2.3 Invalid Host Key!', 
+    2.4: 'Err:2.4 Unknown Host! Add host to known hosts in the program or system', 
+    3: 'Err:3 Specified File Does Not Exist', 
+    4: 'Err:4 An unknown error has occured. Check logs or error.txt'
+    }
 
 
 def connect(host, user, key, cPath = '', keyfile = None):
@@ -33,9 +48,11 @@ def connect(host, user, key, cPath = '', keyfile = None):
     try: 
         connection.connect(hostname=host, username=user, password=key, key_filename = keyfile)
     except Exception as e:
-        exportErrorInfo(str(e))
-        match (e):
+        #exportErrorInfo(str(e))
+        match (type(e)):
             case paramiko.AuthenticationException:
+                return 2.1
+            case 'Authentication failed.':
                 return 2.1
             case paramiko.BadAuthenticationType:
                 return 2.2
@@ -89,22 +106,34 @@ def decode(data):
 def loadConfig():
     global hosts
     global previousLogin
-    with open('easysftp/config.bin', 'rb') as config:
+    global settings
+    with open(wDir+'/.cfg', 'rb') as config:
         data = config.read()
         data = decode(data)
     data = bses.switch(data, 'Tilda4744#@', 0)
     data = loads(encode(data))
     previousLogin = data[0]
     hosts = data[1]
+    settings = data[2]
     return 0
+
+
+def changeSettings(param, value):
+    global settings
+    settings[param] = value
+    saveConfig()
     
 
 def saveConfig():
-    with open('easysftp/config.bin', 'wb') as config:
-        data = dumps({0: previousLogin, 1: hosts})
+    mode = 'wb'
+    if exists(wDir+'/.cfg'): mode = 'rb+'
+    with open(wDir+'/.cfg', mode) as config:
+        if settings['saveFingerprints']: data = dumps({0: previousLogin, 1: hosts, 2:settings})
+        else: data = dumps({0: previousLogin, 1: [], 2:settings})
         data = decode(data)
         data = bses.switch(data, 'Tilda4744#@', 0)
         config.write(encode(data))
+    if platform == 'win32': system(r'attrib +H {}\.cfg'.format(wDir))
     return 0
 
 
@@ -125,14 +154,15 @@ def loadHosts():
 
 def getKey(host):
     keys = list()
-    system('@echo off')
-    system(r'ssh-keyscan {} > easysftp\key.pub'.format(host))
+    if platform == 'win32': system('@echo off')
+    system('ssh-keyscan {} > easysftp/key.pub'.format(host))
     with open('easysftp/key.pub', 'r') as keyfile:
         data = keyfile.read().split()
     for i in data:
         if i == 'ssh-rsa' or i == 'ssh-ed25519':
             keys.append([i, data[data.index(i)+1].encode()])
-    system(r'del easysftp\key.pub')
+    if platform == 'win32': system(r'del easysftp\key.pub')
+    else: system('rm easysftp/key.pub')
     system('@echo on')
     return keys
 
