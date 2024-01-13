@@ -1,4 +1,4 @@
-----------easysftp 2.5.0 Console Manual----------
+easysftp 2.6.0 Console Manual////////////>
 
 _____Navigation_____
 For navigating/downloading files, type the number of the corressponding file/directory
@@ -17,6 +17,27 @@ _____Commands_____
 > ls
     Displays the files in the current directory
 
+> lls
+    Displays the files in the local directory
+
+> clearlogs
+    Clear logs
+
+> viewlogs
+    Display logs
+
+> showhidden
+    Shows hidden files
+
+> hidehidden
+    Hides hidden filesss
+
+> set <param> <value>
+    Change Settings. Type `set help` for more info
+
+> clearhosts
+    Clear hosts keys from local database (Does not affect system known_hosts)s
+
 > clear
     Clears the output screen
 
@@ -32,5 +53,5 @@ _____Commands_____
 > about
     Displays the about page
 
-Last Updated: 06-01-2024
+Last Updated: 14-01-2024
     

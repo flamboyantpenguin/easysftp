@@ -1,11 +1,11 @@
 .vscode
 .venv
-config.bin
-Downloads
-easysftp/config.bin
-easysftp/Downloads
+.cfg
+.log
+easysftp/.cfg
+easysftp/easysftp
 easysftp/__pycache__
 pyinstaller/build
 pyinstaller/dist
 easysftp/bses03/__pycache__
-easysftp/logs.txt
+easysftp/.log
