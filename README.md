@@ -61,6 +61,9 @@ Current Directory: /home/penguin/Data
 easysftp>
 ```
 
+> [!NOTE]
+> Hidden files are not displayed by default. To turn view them, type `showhidden` in console.
+
 Type `2` and hit enter to move to Directory `Backup`
 
 ```Console
@@ -74,11 +77,14 @@ Current Directory: /home/penguin/Data/Backup
 easysftp>
 ```
 
+> [!WARNING]
+> Numbering system is based on the files displayed on console when you use `ls`. To access/download hidden files/directories type `showhidden` and `ls` before accessing them.
+
 To download files, type the coressponding number of the required file. Files will be stored in a local folder named easysftp.
 
 ```Console
 easysftp>3
-Downloading [///////////////////////////////////////////////////\] 0.01 KB / 0.01 KB 100% 0.01 KB/s     ▼
+Downloading [///////////////////////////////////////\] 0.01 KB / 0.01 KB 100% 0.01 KB/s     ▼
 ```
 
     Note: The upload/download speed may not be accurate. Do not rely it for speed testing. 
@@ -111,7 +117,7 @@ To upload a file located in the `easysftp` directory, use put command
 
 ```Console
 put 20220912_083256.jpg
-Uploading [//////////////////////////////////////////////////////-] 2.45 MB / 2.45 MB 100% 191.74 KB/s   ▲
+Uploading [//////////////////////////////////////////-] 2.45 MB / 2.45 MB 100% 191.74 KB/s   ▲
 File Uploaded successfully
 Current Directory: /home/penguin/Data/Backup
 
@@ -144,15 +150,33 @@ easysftp> set saveFingerprints 0
 
 ## Privacy
 
-With the introduction to application settings in version `2.6`, users now have more choice towards how easysftp works. `saveFingerprints` setting helps you to turn on/off local fingerprint storage for verification. 
+With the introduction to application settings in version `2.6`, users now have more choice towards how easysftp works. We have decided to make fingerprint storage and logging file names optional to improve user privacy. __We do not collect software logs/reports.__ However we believe these options give the user a sense of privacy. 
+
+- `saveFingerprints` > Enable/Disable saving fingerprints locally
+- `logFileName` > Enable/Disable logging file names during download/upload
+
+You can use the set command to modify these parameters. Refer [Changing Application Settings](https://github.com/flamboyantpenguin/easysftp/edit/release2.6_doc/README.md#Changing-Application-Settings) to learn more about the commnand. 
 
 ## Changing Application Settings 
 
-easysftp 2.6.0 supports application settings. 
+easysftp 2.6.0 supports application settings. You can modify the following values. 
+
+- `showHiddenFiles` > Enable/Disable showing hidden files on the remote system
+- `saveFingerprints` > Enable/Disable saving fingerprints locally
+- `clearLogonStartup` > Enable/Disable clearing logs on startup
+- `logFileName` > Enable/Disable logging file names during download/upload
+
+Use `set` command to change settings. For instance, 
+
+```Console
+easysftp> set logFileName 0
+```
+
+Disables logging flenames. 
 
 ## Errors and Debugging
 
-In case of any error, you can check the `.log` and `errorInfo.txt` file in the `easysftp` directory. `errorInfo.txt` is an error report of the last reported error. The logging system is still in development but will be useful in some cases. Since `.log` is hidden, you can also use the `viewlogs` command to open the logs in your default text editor. Logs will be useful in reporting errors. 
+In case of any error, you can check the `.log` and `errorInfo.txt` file in the `easysftp` directory. `errorInfo.txt` is an error report of the last reported error. The logging system is still in development but will be useful in some cases. Since `.log` is hidden, you can also use the `viewlogs` command to open the logs in your default text editor. Logs will be useful in reporting errors. To clear old logs use `clearlogs` command. 
 
 ## Supported Platforms and Requirements
 
@@ -162,7 +186,7 @@ The program has been tested successfully in the following platforms
 - Windows 10/11
 - Linux
   - amd64
-    - Ubuntu (22.04.1, 23.04)
+    - Ubuntu (22.04.1, 23.10)
   - armv8
     - Ubuntu
 
