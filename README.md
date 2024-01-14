@@ -27,7 +27,7 @@ After downloading the installer, extract the contents and run the install.sh scr
 
 After successfull installation, you will see an executable file named easysftp-_version_.
 
-`./easysftp-2.5`
+`./easysftp-2.6`
 
 To learn more about the installer, refer installer manual included with the installer.
 
@@ -37,7 +37,8 @@ To run easysftp from source, clone this repository using git or download the sou
 
 `git clone https://github.com/flamboyantpenguin/easysftp`
 
-Note: To clone this repository on Windows, you need to have [git for windows](https://git-scm.com/) installed in your system.
+> [!NOTE]
+> To clone this repository on Windows, you need to have [git for windows](https://git-scm.com/) installed in your system.
 
 ## Basic Commands
 
@@ -60,6 +61,9 @@ Current Directory: /home/penguin/Data
 easysftp>
 ```
 
+> [!NOTE]
+> Hidden files are not displayed by default. To turn view them, type `showhidden` in console.
+
 Type `2` and hit enter to move to Directory `Backup`
 
 ```Console
@@ -73,11 +77,14 @@ Current Directory: /home/penguin/Data/Backup
 easysftp>
 ```
 
+> [!WARNING]
+> Numbering system is based on the files displayed on console when you use `ls`. To access/download hidden files/directories type `showhidden` and `ls` before accessing them.
+
 To download files, type the coressponding number of the required file. Files will be stored in a local folder named easysftp.
 
 ```Console
 easysftp>3
-Downloading [//////////////////////////////////////////////////////////////////\] 0.01 KB / 0.01 KB 100% 0.01 KB/s     ▼
+Downloading [///////////////////////////////////////\] 0.01 KB / 0.01 KB 100% 0.01 KB/s     ▼
 ```
 
     Note: The upload/download speed may not be accurate. Do not rely it for speed testing. 
@@ -110,7 +117,7 @@ To upload a file located in the `easysftp` directory, use put command
 
 ```Console
 put 20220912_083256.jpg
-Uploading [////////////////////////////////////////////////////////////////////-] 2.45 MB / 2.45 MB 100% 191.74 KB/s   ▲
+Uploading [//////////////////////////////////////////-] 2.45 MB / 2.45 MB 100% 191.74 KB/s   ▲
 File Uploaded successfully
 Current Directory: /home/penguin/Data/Backup
 
@@ -122,17 +129,54 @@ Current Directory: /home/penguin/Data/Backup
 easysftp>
 ```
 
-    Note: While using put command make sure to type the full file name. 
+> [!IMPORTANT]
+> While using put command make sure to type the full file name. 
 
 For more info refer [manuals](./docs/manual.md)
 
 ## Authentication
 
-easysftp now supports key based authentication. Previously, easysftp ignored unknown hosts. This is not a recommended practise and is a security vulnerability. Therefore, we have modified our authentication system. If the ssh-fingerprint of your remote server is present in your system (stored in `.ssh/known_hosts` in your home directory) the keys will be automatically loaded from it. In case of a unrecognised host, you have the option to add the fingerprint key to the local easysftp storage (`config.bin`) without disturbing your system `known_hosts` file. This fingerprint will be used for furthur authentication. For public key based authentication, you can copy your `key.pub` file to the `easysftp` directory or it will be automatically loaded from the system (`.ssh`). Upon successfull login to a server, login info will be saved automatically. Passwords are no longer stored locally and you need to manually enter the password upon each login. 
+easysftp now supports key based authentication. Previously, easysftp ignored unknown hosts. This is not a recommended practise and is a security vulnerability. Therefore, we have modified our authentication system. If the ssh-fingerprint of your remote server is present in your system (stored in `.ssh/known_hosts` in your home directory) the fingerprints will be automatically loaded from it. In case of a unrecognised host, you have the option to add the fingerprint key to the local easysftp storage (`.cfg`) without disturbing your system `known_hosts` file. This fingerprint will be used for furthur authentication. For public key based authentication, you can copy your `key` file to the `easysftp` directory. Upon successfull login to a server, login info will be saved automatically. Passwords are no longer stored locally and you need to manually enter the password upon each login. 
+
+Fingerprints are stored in `.cfg`. `.cfg` is encrypted using bses and can be decrypted only by the `easysftp` client. As of now config is version specific and we can guarentee maximum compatibility of a previous config file with latest versions. It is recommended that you delete the previously created config files before using the latest version. `.cfg`. is hidden and stored in the `easysftp` directory. You can view them by enabling View Hidden Files option in file explorer. However, you also have the option to turn of saving fingerprints locally. This can be done using the command 
+
+```Console
+easysftp> set saveFingerprints 0
+```
+
+
+> [!NOTE]
+> After turning off `saveFingerprints` you will have to verify previously connected hosts on each login if not authorized by the OS
+
+## Privacy
+
+With the introduction to application settings in version `2.6`, users now have more choice towards how easysftp works. We have decided to make fingerprint storage and logging file names optional to improve user privacy. __We do not collect software logs/reports.__ However we believe these options give the user a sense of privacy. 
+
+- `saveFingerprints` > Enable/Disable saving fingerprints locally
+- `logFileName` > Enable/Disable logging file names during download/upload
+
+You can use the set command to modify these parameters. Refer [Changing Application Settings](https://github.com/flamboyantpenguin/easysftp/edit/release2.6_doc/README.md#Changing-Application-Settings) to learn more about the commnand. 
+
+## Changing Application Settings 
+
+easysftp 2.6.0 supports application settings. You can modify the following values. 
+
+- `showHiddenFiles` > Enable/Disable showing hidden files on the remote system
+- `saveFingerprints` > Enable/Disable saving fingerprints locally
+- `clearLogonStartup` > Enable/Disable clearing logs on startup
+- `logFileName` > Enable/Disable logging file names during download/upload
+
+Use `set` command to change settings. For instance, 
+
+```Console
+easysftp> set logFileName 0
+```
+
+Disables logging flenames. 
 
 ## Errors and Debugging
 
-In case of any error, you can check the `logs.txt` and `error.txt` file in the `easysftp` directory. `error.txt` is an error report of the last reported error. The logging system is still in development but will be useful in some cases. 
+In case of any error, you can check the `.log` and `errorInfo.txt` file in the `easysftp` directory. `errorInfo.txt` is an error report of the last reported error. The logging system is still in development but will be useful in some cases. Since `.log` is hidden, you can also use the `viewlogs` command to open the logs in your default text editor. Logs will be useful in reporting errors. To clear old logs use `clearlogs` command. 
 
 ## Supported Platforms and Requirements
 
@@ -142,16 +186,16 @@ The program has been tested successfully in the following platforms
 - Windows 10/11
 - Linux
   - amd64
-    - Ubuntu (22.04.1, 23.04)
+    - Ubuntu (22.04.1, 23.10)
   - armv8
     - Ubuntu
 
 ## About
 
 ```Txt
-easysftp 2.5.0
+easysftp 2.6.0
 
-Last Updated: 06-01-2024
+Last Updated: 14-01-2024
 Made by DAWN/ペンギン
 ```
 
