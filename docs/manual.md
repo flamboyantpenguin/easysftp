@@ -68,4 +68,8 @@ Displays version info
 
 Displays program info
 
+### `licenseinfo`
+
+Displays license information
+
     Last Updated: 14-01-2024

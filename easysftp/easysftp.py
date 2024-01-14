@@ -197,6 +197,13 @@ def displayAbout():
     with open(assetPath+'/about.txt', 'r', encoding = 'UTF-8') as about:
         print(about.read())
     cui.setColor(cui.reset)
+    return 0
+
+
+def displayLicense():
+    with open(assetPath+'/license.txt', 'r', encoding = 'UTF-8') as about:
+        print(about.read())
+    return 0
 
 
 def displayManual(p = None):
@@ -260,6 +267,7 @@ checkUpdate()
 print(cui.cyan, 'easyftp {}'.format(version), sep='')
 print('https://github.com/flamboyantpenguin/easysftp')
 print('An easy to use program for downloading files from a remote server via sftp', cui.reset, sep='')
+print(cui.licenseInfo)
 errorCode = initialise()
 if (errorCode):
     logger(connector.errorCode[errorCode], errorCode)
@@ -329,6 +337,7 @@ while 1:
 
 
             elif ch == 'about': clearConsole(); displayAbout()
+            elif ch == 'licenseinfo': clearConsole(); displayLicense()
 
             elif ch in ['', ' ']: continue
             else: print(cui.red, '\aInvalid Command', cui.reset, sep = ' ')
@@ -338,4 +347,4 @@ while 1:
         print('\aUnexpected Error')
         print(error)
         cui.setColor(cui.reset)
-        print('\nReport Errors at https://github.com/flamboyantpenguin/easysftp')
+        print('\nReport Errors at https://github.com/flamboyantpenguin/easysftp/issues')
