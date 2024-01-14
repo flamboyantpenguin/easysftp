@@ -36,7 +36,7 @@ _____Commands_____
     Change Settings. Type `set help` for more info
 
 > clearhosts
-    Clear hosts keys from local database (Does not affect system known_hosts)s
+    Clear hosts keys from local database (Does not affect system known_hosts)
 
 > clear
     Clears the output screen
