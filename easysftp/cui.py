@@ -30,6 +30,14 @@ lAIcons = ['|', '/', '-', '\\']
 # Progress Bar Queue
 queue = SimpleQueue()
 
+# License
+licenseInfo = '''
+\neasysftp 2.6.0  Copyright (C) 2024  DAWN/ペンギン
+This program comes with ABSOLUTELY NO WARRANTY; for details type `licenseinfo'.
+This is free software, and you are welcome to redistribute it
+under certain conditions; type `licenseinfo' for details.
+\n'''
+
 # DAWN Logo
 logo = '''
 >>>>>>>>>>  >>>>          >>              >>              >>  >>>>        >>
