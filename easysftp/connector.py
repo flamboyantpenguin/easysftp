@@ -1,8 +1,8 @@
-# easysftp 2.6.0
+# easysftp 2.6.1
 # An easy to use console based client for Downloading files from a remote server using sftp
 # Program made with paramiko
 # Made by DAWN/ペンギン
-# Last Updated 14-01-2024
+# Last Updated 26-01-2024
 
 
 import paramiko

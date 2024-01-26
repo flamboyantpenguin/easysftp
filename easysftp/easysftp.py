@@ -1,8 +1,8 @@
-# easysftp console 2.6.0
+# easysftp console 2.6.1
 # An easy to use console based client for transferring files via sftp
 # Program made with paramiko
 # Made by DAWN/ペンギン
-# Last Updated: 14-01-2024
+# Last Updated: 26-01-2024
 
 
 import sys
@@ -20,7 +20,7 @@ if sys.platform == 'win32': from os import startfile
 
 
 ldir = []
-version = '2.6.0'
+version = '2.6.1'
 wDir = connector.wDir
 sysfiles = ['.cfg', '.log', 'easysftp-2.6.exe', 'easysftp-2.6']
 
@@ -135,7 +135,7 @@ def get(file):
 
 
 def put(file):
-    fsize = cui.unitCalc(stat(file).st_size)
+    fsize = cui.unitCalc(stat(wDir+'/'+file).st_size)
     print('Uploading {} ({:.2f} {})'.format(file, fsize[0], fsize[1]))
     fileUpload = Thread(target=connector.sftp.put, args=(wDir+'/'+file, file, tProgress))
     fileUpload.daemon = True
@@ -319,6 +319,7 @@ while 1:
             
             elif ch == 'lls': lls() 
             elif ch == 'ls': ls() 
+            elif ch == 'meow': print(cui.orange, "\nMeow 🐈\n", cui.reset, sep = '')
             elif ch == 'cls' or ch == 'clear': clearConsole()
             elif ch == 'version': print(cui.green, '\neasysftp {}\n'.format(version), cui.reset, sep = '')
             elif ch == 'clearlogs': clearlogs(); print(cui.green, "Done!", cui.reset, sep = '')
