@@ -13,7 +13,7 @@ from json import dumps
 from getpass import getpass
 from threading import Thread
 from time import sleep, strftime
-from os import mkdir, path, system, listdir, remove, stat
+from os import mkdir, path, system, listdir, remove, stat, popen
 
 #os.startfile is not available for linux
 if sys.platform == 'win32': from os import startfile
@@ -248,7 +248,9 @@ def checkUpdate():
                     print('Downloading easysftp-{} [{}]'.format(newVersion, cui.lAIcons[k]), flush=True, end='')
                     k = k+1 if k < len(cui.lAIcons)-1 else 0
                     clear()
-                if sys.platform == 'win32': start('easysftp-{}.exe'.format(newVersion[:3]))
+                if sys.platform == 'win32': 
+                    popen(r"TIMEOUT /t 5 && del easysftp-{old}.exe && rename easysftp-{new}.exe.new easysftp-{new}.exe && .\easysftp-{new}.exe".format(old = version, new = newVersion))
+                    #start('easysftp-{}.exe'.format(newVersion[:3]))
                 else: 
                     system('tar xzf easysftp-linux-installer.tar.gz')
                     system('sudo ./install.sh')
@@ -331,7 +333,7 @@ while 1:
             elif ch == 'checkupdate':
 
                 r = checkUpdate()
-                if r is False:
+                if not r:
                     print(cui.green, 'The software is up to date. For downloading other versions, go to https://github.com/flamboyantpenguin/easysftp/releases', cui.reset, sep = ' ')
                 else:
                     print(cui.red, 'Update check failed! Check your internet connection and try again', cui.reset, sep = ' ')
