@@ -1,4 +1,4 @@
-# easysftp 2.6.0 Console Manual
+# easysftp 2.6.1 Console Manual
 
 Info on Navigation and Basic Commands
 
@@ -52,6 +52,10 @@ Clear hosts keys from local database (Does not affect system known_hosts)
 
 Change Settings. Type `set help` for more info
 
+### `settings`
+
+View Settings
+
 ### `clear`
 
 Clears the output screen
@@ -72,4 +76,4 @@ Displays program info
 
 Displays license information
 
-    Last Updated: 14-01-2024
+    Last Updated: 26-01-2024

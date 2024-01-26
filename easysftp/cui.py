@@ -1,6 +1,6 @@
 # Console UI for easysftp
-# Version: 2.6.0
-# Last Updated: 14-01-2024
+# Version: 2.6.1
+# Last Updated: 26-01-2024
 
 
 from queue import SimpleQueue

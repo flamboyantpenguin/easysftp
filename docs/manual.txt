@@ -1,4 +1,4 @@
-easysftp 2.6.0 Console Manual////////////>
+easysftp 2.6.1 Console Manual////////////>
 
 _____Navigation_____
 For navigating/downloading files, type the number of the corressponding file/directory
@@ -35,6 +35,9 @@ _____Commands_____
 > set <param> <value>
     Change Settings. Type `set help` for more info
 
+> Settings
+    View Settings
+
 > clearhosts
     Clear hosts keys from local database (Does not affect system known_hosts)
 
@@ -56,5 +59,5 @@ _____Commands_____
 > licenseinfo
     Displays license information
 
-Last Updated: 14-01-2024
+Last Updated: 26-01-2024
     
